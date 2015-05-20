@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="timetrackr.activity.PeriodsActivity">
+
+    <item
+        android:id="@+id/action_add_period"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:orderInCategory="100"
+        android:title="@string/action_add_period"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_beacon_settings"
+        android:icon="@drawable/ic_bluetooth_searching_black_24dp"
+        android:orderInCategory="200"
+        android:title="Beacons"
+        app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/action_working_hours_settings"
+        android:icon="@drawable/ic_access_time_black_24dp"
+        android:orderInCategory="300"
+        android:title="@string/action_working_hours_settings"
+        app:showAsAction="always" />
+</menu>

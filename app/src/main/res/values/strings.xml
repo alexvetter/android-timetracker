@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Time Trackr</string>
+
+    <!-- Toasts & Errors -->
+    <string name="beacon_already_registered">Beacon already registered!</string>
+    <string name="beacon_registered">Beacon registered!</string>
+
+    <string name="error_bluetooth_le_not_supported">Bluetooth LE is not supported.</string>
+    <string name="error_bluetooth_not_supported">Bluetooth is not supported.</string>
+
+    <string name="unknown_device">Unknown device</string>
+
+    <!-- Menu items -->
+    <string name="menu_scan">Scan</string>
+    <string name="menu_stop">Stop</string>
+
+    <!-- Activities -->
+    <string name="title_activity_scan">Scan for Beacons</string>
+    <string name="title_activity_periods">Periods</string>
+    <string name="title_activity_beacon">Beacons</string>
+    <string name="title_activity_working_hours">Working hours</string>
+    <string name="title_activity_period_detail">Period</string>
+
+    <!-- Actions -->
+    <string name="action_working_hours_settings">Working hours</string>
+    <string name="action_beacon_settings">Beacons</string>
+    <string name="action_scan_settings">Add beacons</string>
+    <string name="action_add_period">Add period</string>
+    <string name="action_save">Save</string>
+    <string name="action_stop">Stop</string>
+
+    <!-- Notification -->
+    <string name="question_stop_current_working">Should current working period be stopped?</string>
+</resources>
