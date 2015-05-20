@@ -66,7 +66,7 @@ public class TargetHours {
         return getDuration(Day.valueOf(dayOfWeek));
     }
 
-    public Duration getDuration(Day dayOfWeek) {
+    private Duration getDuration(Day dayOfWeek) {
         Duration targetHours = new Duration(0);
 
         switch (dayOfWeek) {

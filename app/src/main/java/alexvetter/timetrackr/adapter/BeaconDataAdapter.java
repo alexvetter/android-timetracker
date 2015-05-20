@@ -17,10 +17,9 @@ import alexvetter.timetrackr.model.BeaconModel;
 /**
  *
  */
-public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.ViewHolder> {
+public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.ViewHolder> implements AbstractDatabaseHandler.DatabaseHandlerListener {
 
     private AbstractDatabaseHandler<BeaconModel, String> dataset;
-    private Context context;
 
     /**
      * Provides references to the views for each data item
@@ -45,10 +44,8 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
      * Data adapter for {@link RegisteredBeaconsActivity}
      * and its RecylerView.
      */
-    public BeaconDataAdapter(AbstractDatabaseHandler<BeaconModel, String> dataset, Context context) {
+    public BeaconDataAdapter(AbstractDatabaseHandler<BeaconModel, String> dataset) {
         this.dataset = dataset;
-        this.context = context;
-
         this.dataset.registerAdapter(this);
     }
 

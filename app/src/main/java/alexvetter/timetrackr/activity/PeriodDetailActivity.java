@@ -120,7 +120,7 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
         if (endDate.isAfter(startDate)) {
             endDateTime = startDateTime.withTime(23, 59, 59, 999);
 
-            Toast.makeText(this, "A period can only be on one day.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.info_period_end_same_day), Toast.LENGTH_SHORT).show();
         }
     }
 

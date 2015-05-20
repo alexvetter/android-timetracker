@@ -67,7 +67,7 @@ public class TargetHoursActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    protected void saveWorkingHours() {
+    private void saveWorkingHours() {
         TargetHours hours = new TargetHours(this);
 
         hours.setMonday(Integer.parseInt(mondayTextView.getText().toString()));

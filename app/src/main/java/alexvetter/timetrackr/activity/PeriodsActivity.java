@@ -29,19 +29,17 @@ public class PeriodsActivity extends AppCompatActivity {
      */
     private RecyclerView recyclerView;
 
-    private TextView hoursTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_periods);
 
-        hoursTextView = (TextView) findViewById(R.id.period_working_times);
+        TextView hoursTextView = (TextView) findViewById(R.id.period_working_times);
 
         recyclerView = (RecyclerView) findViewById(R.id.period_recycler_view);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-        recyclerView.setAdapter(new PeriodDataAdapter(new PeriodDatabaseHandler(), this));
+        recyclerView.setAdapter(new PeriodDataAdapter(new PeriodDatabaseHandler()));
         recyclerView.getAdapter().registerAdapterDataObserver(new AdapterObserver(this, hoursTextView));
 
         // use a linear layout manager

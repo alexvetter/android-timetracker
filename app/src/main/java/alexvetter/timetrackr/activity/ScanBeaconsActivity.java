@@ -1,11 +1,14 @@
 package alexvetter.timetrackr.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import org.altbeacon.beacon.Beacon;
@@ -65,7 +68,7 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
         super.onResume();
 
         // Initializes list view adapter.
-        scanDataAdapter = new ScanDataAdapter(this);
+        scanDataAdapter = new ScanDataAdapter();
         recyclerView.setAdapter(scanDataAdapter);
 
         beaconManager.bind(this);
@@ -79,20 +82,12 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
 
     @Override
     public void onBeaconServiceConnect() {
-        System.out.println("onBeaconServiceConnect");
-
         beaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                if (beacons.size() > 0) {
-                    StringBuilder s = new StringBuilder();
-
-                    for (Beacon beacon : beacons) {
-                        beacon.getBluetoothName();
-                        s.append('–').append(beacon.toString()).append('\n');
-                        scanDataAdapter.addDevice(beacon);
-                        notifyAdapater();
-                    }
+                for (Beacon beacon : beacons) {
+                    scanDataAdapter.addDevice(beacon);
+                    notifyAdapater();
                 }
             }
         });
@@ -104,7 +99,7 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
         }
     }
 
-    protected void notifyAdapater() {
+    private void notifyAdapater() {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -115,29 +110,54 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
 
     public void onDeviceAdd(View view) {
         int itemPosition = (int) view.getTag();
-        Beacon device = scanDataAdapter.getDevice(itemPosition);
+        final Beacon device = scanDataAdapter.getDevice(itemPosition);
 
-        String address = device.getId1().toUuidString();
+        final String address = device.getId1().toUuidString();
+
         String name = device.getBluetoothName() == null || device.getBluetoothName().isEmpty() ? getString(R.string.unknown_device) : device.getBluetoothName();
 
-        System.out.println("Add device: " + address + " " + device.getIdentifiers().toString());
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-        BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
+        alert.setTitle(getString(R.string.dialog_add_beacon_title));
+        alert.setMessage(getString(R.string.dialog_add_beacon_message));
 
-        BeaconModel model = handler.get(address);
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        input.setText(name);
+        alert.setView(input);
 
-        if (model != null) {
-            Toast.makeText(this, R.string.beacon_already_registered, Toast.LENGTH_SHORT).show();
-        } else {
-            model = new BeaconModel();
+        alert.setPositiveButton(getString(R.string.action_ok), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
 
-            model.setUuid(address);
-            model.setName(name);
-            model.setEnabled(true);
+                System.out.println("Add device: " + address + " " + device.getIdentifiers().toString());
 
-            handler.add(model);
+                BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
 
-            Toast.makeText(this, R.string.beacon_registered, Toast.LENGTH_SHORT).show();
-        }
+                BeaconModel model = handler.get(address);
+
+                if (model != null) {
+                    Toast.makeText(ScanBeaconsActivity.this, R.string.beacon_already_registered, Toast.LENGTH_SHORT).show();
+                } else {
+                    model = new BeaconModel();
+
+                    model.setUuid(address);
+                    model.setName(value);
+                    model.setEnabled(true);
+
+                    handler.add(model);
+
+                    Toast.makeText(ScanBeaconsActivity.this, R.string.beacon_registered, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alert.setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 }

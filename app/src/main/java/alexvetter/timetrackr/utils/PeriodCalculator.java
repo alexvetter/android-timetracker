@@ -1,5 +1,6 @@
 package alexvetter.timetrackr.utils;
 
+import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -14,7 +15,7 @@ import alexvetter.timetrackr.model.PeriodModel;
 
 public class PeriodCalculator {
 
-    public static final PeriodFormatter PERIOD_FORMATTER_LONG = new PeriodFormatterBuilder()
+    private static final PeriodFormatter PERIOD_FORMATTER_LONG = new PeriodFormatterBuilder()
             .appendDays()
             .appendSuffix(" day", " days")
             .appendSeparator(" and ")
@@ -28,7 +29,7 @@ public class PeriodCalculator {
             .appendSuffix(" second", " seconds")
             .toFormatter();
 
-    public static final PeriodFormatter PERIOD_FORMATTER_SHORT = new PeriodFormatterBuilder()
+    private static final PeriodFormatter PERIOD_FORMATTER_SHORT = new PeriodFormatterBuilder()
             .appendDays()
             .appendSuffix(" d")
             .appendSeparator(" ")
@@ -84,6 +85,11 @@ public class PeriodCalculator {
         System.out.println("calculated target time " + getPeriodFormatter().print(totalTargetPeriod.normalizedStandard()));
 
         return totalWorkingPeriod.minus(totalTargetPeriod);
+    }
+
+    public static String getPeriodShort(DateTime start, DateTime end) {
+        Duration workingDuration = new Duration(start, end);
+        return getPeriodFormatterShort().print(workingDuration.toPeriod().normalizedStandard());
     }
 
     public static PeriodFormatter getPeriodFormatter() {

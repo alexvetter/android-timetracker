@@ -18,6 +18,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:background="@drawable/ic_edit_white_48dp"
+            android:contentDescription="@string/image_desc_edit_period"
             android:onClick="onEdit" />
 
         <ImageButton
@@ -27,6 +28,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:background="@drawable/ic_delete_red_800_48dp"
+            android:contentDescription="@string/image_desc_delete_period"
             android:onClick="onDelete" />
     </LinearLayout>
 
@@ -35,14 +37,15 @@
         android:layout_height="wrap_content"
         android:background="@drawable/border_right"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:baselineAligned="false">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/period_name"
@@ -70,10 +73,11 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
+            android:layout_marginRight="6dp"
             android:orientation="vertical"
             android:weightSum="1"
-            android:layout_marginRight="6dp">
+            android:layout_marginTop="10dp"
+            android:layout_weight="0">
 
             <TextView
                 android:id="@+id/period_date"
@@ -89,7 +93,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_height="0dp"
                 android:layout_gravity="right"
                 android:layout_weight="1"
                 android:orientation="horizontal">

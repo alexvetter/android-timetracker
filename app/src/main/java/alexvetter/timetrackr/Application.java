@@ -5,8 +5,10 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -23,15 +25,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alexvetter.timetrackr.activity.PeriodDetailActivity;
+import alexvetter.timetrackr.database.AbstractDatabaseHandler;
 import alexvetter.timetrackr.database.BeaconDatabaseHandler;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
 import alexvetter.timetrackr.database.SQLiteHelper;
 import alexvetter.timetrackr.model.BeaconModel;
 import alexvetter.timetrackr.model.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
+import alexvetter.timetrackr.utils.PeriodCalculator;
 import alexvetter.timetrackr.utils.TargetHours;
 
-public class Application extends android.app.Application implements BootstrapNotifier, DateTimeFormats {
+public class Application extends android.app.Application implements BootstrapNotifier, DateTimeFormats, AbstractDatabaseHandler.DatabaseHandlerListener {
 
     private static final String ACTION_YES = "ACTION_YES";
 
@@ -46,7 +50,7 @@ public class Application extends android.app.Application implements BootstrapNot
     private BeaconDatabaseHandler beaconDatabaseHandler;
     private PeriodDatabaseHandler periodDatabaseHandler;
 
-    private List<Region> regions;
+    private final List<Region> regions = new ArrayList<>();
 
     @Override
     public void onCreate() {
@@ -85,12 +89,8 @@ public class Application extends android.app.Application implements BootstrapNot
         // iBeacons
         beaconManager.getBeaconParsers().add(new BeaconParser().setBeaconLayout("m:2-3=0215,i:4-19,i:20-21,i:22-23,p:24-24"));
 
-        regions = new ArrayList<>();
-        for (BeaconModel model : beaconDatabaseHandler.getAll()) {
-            if (model.getEnabled()) {
-                regions.add(newRegionFromBeacon(model));
-            }
-        }
+        // add registered beacons as regions
+        notifyDataSetChanged();
 
         // wake up the app when a beacon is seen
         regionBootstrap = new RegionBootstrap(this, regions);
@@ -104,8 +104,7 @@ public class Application extends android.app.Application implements BootstrapNot
         System.out.println("Did enter region. " + region.getId1().toUuidString());
 
         BeaconModel model = beaconDatabaseHandler.get(region.getId1().toUuidString());
-        if (!model.getEnabled()) {
-            regions.remove(region);
+        if (model == null || !model.getEnabled()) {
             return;
         }
 
@@ -130,6 +129,11 @@ public class Application extends android.app.Application implements BootstrapNot
     public void didExitRegion(Region region) {
         PeriodModel current = periodDatabaseHandler.getCurrentPeriod();
 
+        BeaconModel model = beaconDatabaseHandler.get(region.getId1().toUuidString());
+        if (model == null || !model.getEnabled()) {
+            return;
+        }
+
         if (current != null) {
             sendStopNotification(current, DateTime.now());
         }
@@ -140,14 +144,51 @@ public class Application extends android.app.Application implements BootstrapNot
         // ignore
     }
 
+    private void openStopDialog(final PeriodModel model, final DateTime stopDateTime) {
+        String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
+        String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle(getString(R.string.app_name));
+        alert.setMessage(getString(R.string.question_stop_current_working, period));
+
+        alert.setPositiveButton(getString(R.string.action_stop, endTime), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                Intent stopCurrentPeriod = new Intent(Application.this, StopCurrentPeriodReceiver.class);
+                stopCurrentPeriod.setAction(ACTION_YES);
+
+                stopCurrentPeriod.putExtra(EXTRA_PERIOD, model.getId().intValue());
+                stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(dateTimeFormatter));
+
+                Application.this.sendBroadcast(stopCurrentPeriod);
+            }
+        });
+
+        alert.setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
+
+    /**
+     * Builds and send notification to stop working period.
+     */
     private void sendStopNotification(PeriodModel model, DateTime stopDateTime) {
+        String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
+        String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
+
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setContentTitle(getString(R.string.app_name))
-                        .setContentText(getString(R.string.question_stop_current_working))
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentText(getString(R.string.question_stop_current_working, period))
+                        .setSmallIcon(R.drawable.ic_notify)
                         .setAutoCancel(true);
 
+        // Stop button
         Intent stopCurrentPeriod = new Intent(this, StopCurrentPeriodReceiver.class);
         stopCurrentPeriod.setAction(ACTION_YES);
 
@@ -156,20 +197,34 @@ public class Application extends android.app.Application implements BootstrapNot
 
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, stopCurrentPeriod, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        builder.addAction(R.drawable.ic_timer_off_black_24dp, getString(R.string.action_stop), pendingIntentYes);
+        builder.addAction(R.drawable.ic_timer_off_black_24dp, getString(R.string.action_stop, endTime), pendingIntentYes);
 
+        // Click notification -> Open period details
         Intent intent = new Intent(this, PeriodDetailActivity.class);
         intent.putExtra(PeriodDetailActivity.EXTRA_PERIOD_ID, model.getId().intValue());
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addNextIntent(intent);
-
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentIntent(resultPendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(model.getId(), builder.build());
+    }
+
+
+    /**
+     * Comes with the DatabaseHandlerListener interface.
+     * Will be called if the BeaconDatabaseHandler makes
+     * changes to the associated table.
+     */
+    @Override
+    public void notifyDataSetChanged() {
+        regions.clear();
+        for (BeaconModel model : beaconDatabaseHandler.getAll()) {
+            regions.add(newRegionFromBeacon(model));
+        }
     }
 
     public static class StopCurrentPeriodReceiver extends BroadcastReceiver {

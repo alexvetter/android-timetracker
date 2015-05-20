@@ -18,6 +18,7 @@
             android:layout_gravity="center_vertical"
             android:layout_margin="5dp"
             android:background="@drawable/ic_delete_red_800_48dp"
+            android:contentDescription="@string/image_desc_delete_button"
             android:onClick="onDelete" />
     </LinearLayout>
 
@@ -25,16 +26,14 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_right"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_weight="0.2"
             android:orientation="vertical"
-            android:weightSum="1">
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/beacon_name"
@@ -58,15 +57,13 @@
 
         <Switch
             android:id="@+id/beacon_switch"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_weight="0.8"
+            android:layout_weight="0"
             android:checked="true"
-            android:onClick="onToggleEnabled" />
+            android:onClick="onToggleEnabled"
+            android:layout_margin="10dp" />
     </LinearLayout>
 
 </com.daimajia.swipe.SwipeLayout>

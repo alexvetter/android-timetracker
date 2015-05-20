@@ -44,7 +44,7 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        recyclerView.setAdapter(new BeaconDataAdapter(new BeaconDatabaseHandler(), this));
+        recyclerView.setAdapter(new BeaconDataAdapter(new BeaconDatabaseHandler()));
     }
 
     @Override

@@ -77,11 +77,11 @@ public class PeriodModel implements DateTimeFormats {
         this.endTime = endtime;
     }
 
-    protected DateTime parseDateTime(String dateTimeString) {
+    private DateTime parseDateTime(String dateTimeString) {
         return dateTimeFormatter.parseDateTime(dateTimeString);
     }
 
-    protected String toString(DateTime dateTime) {
+    private String toString(DateTime dateTime) {
         return dateTime.toString(dateTimeFormatter);
     }
 

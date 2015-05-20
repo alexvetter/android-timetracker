@@ -20,7 +20,6 @@ import alexvetter.timetrackr.R;
  */
 public class ScanDataAdapter extends RecyclerView.Adapter<ScanDataAdapter.ViewHolder> {
 
-    private final Context context;
     private final List<Beacon> devices;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -37,11 +36,9 @@ public class ScanDataAdapter extends RecyclerView.Adapter<ScanDataAdapter.ViewHo
         }
     }
 
-    public ScanDataAdapter(Context context) {
+    public ScanDataAdapter() {
         super();
-
         this.devices = new ArrayList<>();
-        this.context = context;
     }
 
     public void addDevice(Beacon device) {

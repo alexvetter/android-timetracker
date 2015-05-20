@@ -4,6 +4,6 @@
     <color name="primary">#FFB347</color>
     <!-- light pastel orange -->
     <color name="primary_light">#FFECD0</color>
-
+    <!-- dark pastel orange -->
     <color name="primary_dark">#FA9200</color>
 </resources>

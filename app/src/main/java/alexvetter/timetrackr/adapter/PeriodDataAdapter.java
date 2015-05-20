@@ -20,10 +20,9 @@ import alexvetter.timetrackr.utils.PeriodCalculator;
 /**
  * Adapter for holding tracked periods.
  */
-public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.ViewHolder> implements DateTimeFormats {
+public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.ViewHolder> implements DateTimeFormats, AbstractDatabaseHandler.DatabaseHandlerListener {
 
     private AbstractDatabaseHandler<PeriodModel, Integer> dataset;
-    private Context context;
 
     /**
      * Provides references to the views for each data item
@@ -59,10 +58,8 @@ public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.Vi
      * Data adapter for {@link PeriodsActivity}
      * and its RecylerView.
      */
-    public PeriodDataAdapter(AbstractDatabaseHandler<PeriodModel, Integer> dataset, Context context) {
+    public PeriodDataAdapter(AbstractDatabaseHandler<PeriodModel, Integer> dataset) {
         this.dataset = dataset;
-        this.context = context;
-
         this.dataset.registerAdapter(this);
     }
 
