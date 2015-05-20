@@ -1,4 +1,4 @@
-package timetrackr.adapter;
+package alexvetter.timetrackr.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +10,12 @@ import android.widget.TextView;
 
 import org.joda.time.Period;
 
-import timetrackr.R;
-import timetrackr.activity.PeriodsActivity;
-import timetrackr.database.AbstractDatabaseHandler;
-import timetrackr.model.PeriodModel;
-import timetrackr.utils.DateTimeFormats;
-import timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.activity.PeriodsActivity;
+import alexvetter.timetrackr.database.AbstractDatabaseHandler;
+import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.utils.DateTimeFormats;
+import alexvetter.timetrackr.utils.PeriodCalculator;
 
 /**
  * Adapter for holding tracked periods.
@@ -58,9 +58,6 @@ public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.Vi
     /**
      * Data adapter for {@link PeriodsActivity}
      * and its RecylerView.
-     *
-     * @param dataset
-     * @param context
      */
     public PeriodDataAdapter(AbstractDatabaseHandler<PeriodModel, Integer> dataset, Context context) {
         this.dataset = dataset;

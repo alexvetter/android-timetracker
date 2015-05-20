@@ -1,7 +1,4 @@
-package timetrackr.utils;
-
-import timetrackr.database.PeriodDatabaseHandler;
-import timetrackr.model.PeriodModel;
+package alexvetter.timetrackr.utils;
 
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
@@ -11,6 +8,9 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import alexvetter.timetrackr.database.PeriodDatabaseHandler;
+import alexvetter.timetrackr.model.PeriodModel;
 
 public class PeriodCalculator {
 

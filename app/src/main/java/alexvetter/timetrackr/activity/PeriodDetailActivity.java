@@ -1,4 +1,4 @@
-package timetrackr.activity;
+package alexvetter.timetrackr.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,12 +19,12 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
 
-import timetrackr.R;
-import timetrackr.database.PeriodDatabaseHandler;
-import timetrackr.model.PeriodModel;
-import timetrackr.utils.DateTimeFormats;
-import timetrackr.utils.PeriodCalculator;
-import timetrackr.utils.TargetHours;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.database.PeriodDatabaseHandler;
+import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.utils.DateTimeFormats;
+import alexvetter.timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.utils.TargetHours;
 
 public class PeriodDetailActivity extends AppCompatActivity implements DateTimeFormats {
 

@@ -1,4 +1,4 @@
-package timetrackr.activity;
+package alexvetter.timetrackr.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +11,11 @@ import android.view.View;
 
 import com.daimajia.swipe.SwipeLayout;
 
-import timetrackr.R;
-import timetrackr.adapter.BeaconDataAdapter;
-import timetrackr.database.BeaconDatabaseHandler;
-import timetrackr.model.BeaconModel;
-import timetrackr.utils.DividerItemDecoration;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.adapter.BeaconDataAdapter;
+import alexvetter.timetrackr.database.BeaconDatabaseHandler;
+import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class RegisteredBeaconsActivity extends AppCompatActivity {
 
@@ -28,7 +28,6 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_beacon);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.beacon_recycler_view);
 

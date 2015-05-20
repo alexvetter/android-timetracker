@@ -1,4 +1,4 @@
-package timetrackr.activity;
+package alexvetter.timetrackr.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,12 +15,12 @@ import com.daimajia.swipe.SwipeLayout;
 
 import org.joda.time.Period;
 
-import timetrackr.R;
-import timetrackr.adapter.PeriodDataAdapter;
-import timetrackr.database.PeriodDatabaseHandler;
-import timetrackr.utils.DividerItemDecoration;
-import timetrackr.utils.PeriodCalculator;
-import timetrackr.utils.TargetHours;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.adapter.PeriodDataAdapter;
+import alexvetter.timetrackr.database.PeriodDatabaseHandler;
+import alexvetter.timetrackr.utils.DividerItemDecoration;
+import alexvetter.timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.utils.TargetHours;
 
 public class PeriodsActivity extends AppCompatActivity {
 

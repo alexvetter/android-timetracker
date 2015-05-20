@@ -1,4 +1,4 @@
-package timetrackr.adapter;
+package alexvetter.timetrackr.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -13,7 +13,7 @@ import org.altbeacon.beacon.Beacon;
 import java.util.ArrayList;
 import java.util.List;
 
-import timetrackr.R;
+import alexvetter.timetrackr.R;
 
 /**
  * Adapter for holding devices found through scanning.

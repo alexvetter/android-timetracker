@@ -1,4 +1,4 @@
-package timetrackr.utils;
+package alexvetter.timetrackr.utils;
 
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;

@@ -1,4 +1,4 @@
-package timetrackr.database;
+package alexvetter.timetrackr.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,26 +19,16 @@ public class SQLiteHelper extends SQLiteOpenHelper {
      */
     private static final String DATABASE_NAME = "timetrackdb";
 
-    /**
-     * @param context
-     */
     private SQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     private volatile static SQLiteHelper INSTANCE;
 
-    /**
-     * @return
-     */
     static SQLiteHelper getInstance() {
         return INSTANCE;
     }
 
-    /**
-     * @param context
-     * @return
-     */
     public static void setInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (SQLiteHelper.class) {

@@ -1,16 +1,16 @@
-package timetrackr.database;
+package alexvetter.timetrackr.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import timetrackr.model.PeriodModel;
-import timetrackr.utils.DateTimeFormats;
-
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.utils.DateTimeFormats;
 
 public class PeriodDatabaseHandler extends AbstractDatabaseHandler<PeriodModel, Integer> implements DateTimeFormats {
 
@@ -117,11 +117,10 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<PeriodModel, 
                 }, KEY_ID + "=?",
                 idWhereClause(id), null, null, null, null);
 
-        if (cursor != null) {
-            cursor.moveToFirst();
+        PeriodModel object = null;
+        if (cursor.moveToFirst()) {
+            object = getObjectFromCursor(cursor);
         }
-
-        PeriodModel object = getObjectFromCursor(cursor);
 
         cursor.close();
 

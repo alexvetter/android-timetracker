@@ -1,4 +1,4 @@
-package timetrackr;
+package alexvetter.timetrackr;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -22,14 +22,14 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import timetrackr.activity.PeriodDetailActivity;
-import timetrackr.database.BeaconDatabaseHandler;
-import timetrackr.database.PeriodDatabaseHandler;
-import timetrackr.database.SQLiteHelper;
-import timetrackr.model.BeaconModel;
-import timetrackr.model.PeriodModel;
-import timetrackr.utils.DateTimeFormats;
-import timetrackr.utils.TargetHours;
+import alexvetter.timetrackr.activity.PeriodDetailActivity;
+import alexvetter.timetrackr.database.BeaconDatabaseHandler;
+import alexvetter.timetrackr.database.PeriodDatabaseHandler;
+import alexvetter.timetrackr.database.SQLiteHelper;
+import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.utils.DateTimeFormats;
+import alexvetter.timetrackr.utils.TargetHours;
 
 public class Application extends android.app.Application implements BootstrapNotifier, DateTimeFormats {
 

@@ -1,4 +1,4 @@
-package timetrackr.model;
+package alexvetter.timetrackr.model;
 
 /**
  *
@@ -35,7 +35,7 @@ public class BeaconModel {
     }
 
     public Boolean toggleEnabled() {
-        return (enabled = enabled ? false : true);
+        return (enabled = !enabled);
     }
 
     @Override

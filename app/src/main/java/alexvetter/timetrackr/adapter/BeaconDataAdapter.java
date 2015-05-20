@@ -1,4 +1,4 @@
-package timetrackr.adapter;
+package alexvetter.timetrackr.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +9,10 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import timetrackr.R;
-import timetrackr.activity.RegisteredBeaconsActivity;
-import timetrackr.database.AbstractDatabaseHandler;
-import timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.activity.RegisteredBeaconsActivity;
+import alexvetter.timetrackr.database.AbstractDatabaseHandler;
+import alexvetter.timetrackr.model.BeaconModel;
 
 /**
  *
@@ -44,9 +44,6 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
     /**
      * Data adapter for {@link RegisteredBeaconsActivity}
      * and its RecylerView.
-     *
-     * @param dataset
-     * @param context
      */
     public BeaconDataAdapter(AbstractDatabaseHandler<BeaconModel, String> dataset, Context context) {
         this.dataset = dataset;

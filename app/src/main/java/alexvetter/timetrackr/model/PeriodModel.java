@@ -1,9 +1,9 @@
-package timetrackr.model;
+package alexvetter.timetrackr.model;
 
-
-import timetrackr.utils.DateTimeFormats;
 
 import org.joda.time.DateTime;
+
+import alexvetter.timetrackr.utils.DateTimeFormats;
 
 /**
  *

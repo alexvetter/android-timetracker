@@ -1,4 +1,4 @@
-package timetrackr.database;
+package alexvetter.timetrackr.database;
 
 import android.database.sqlite.SQLiteDatabase;
 

@@ -1,4 +1,4 @@
-package timetrackr.utils;
+package alexvetter.timetrackr.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,4 +1,4 @@
-package timetrackr.activity;
+package alexvetter.timetrackr.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,8 +6,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import timetrackr.R;
-import timetrackr.utils.TargetHours;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.utils.TargetHours;
 
 public class TargetHoursActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package timetrackr.database;
+package alexvetter.timetrackr.database;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public abstract class AbstractDatabaseHandler<OBJECT, ID> implements DatabaseHandler<OBJECT, ID> {
 
-    private static List<RecyclerView.Adapter> adapters = new ArrayList<>();
+    private static final List<RecyclerView.Adapter> adapters = new ArrayList<>();
 
     public void registerAdapter(RecyclerView.Adapter adapter) {
         synchronized (adapters) {

@@ -1,4 +1,4 @@
-package timetrackr.activity;
+package alexvetter.timetrackr.activity;
 
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -16,11 +16,11 @@ import org.altbeacon.beacon.Region;
 
 import java.util.Collection;
 
-import timetrackr.R;
-import timetrackr.adapter.ScanDataAdapter;
-import timetrackr.database.BeaconDatabaseHandler;
-import timetrackr.model.BeaconModel;
-import timetrackr.utils.DividerItemDecoration;
+import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.adapter.ScanDataAdapter;
+import alexvetter.timetrackr.database.BeaconDatabaseHandler;
+import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class ScanBeaconsActivity extends AppCompatActivity implements BeaconConsumer {
     private BeaconManager beaconManager;
@@ -32,8 +32,6 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.scan_recycler_view);
 
@@ -87,7 +85,7 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
             @Override
             public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
                 if (beacons.size() > 0) {
-                    StringBuffer s = new StringBuffer();
+                    StringBuilder s = new StringBuilder();
 
                     for (Beacon beacon : beacons) {
                         beacon.getBluetoothName();
@@ -101,7 +99,8 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
 
         try {
             beaconManager.startRangingBeaconsInRegion(new Region("myRangingUniqueId", null, null, null));
-        } catch (RemoteException e) {
+        } catch (RemoteException ignore) {
+            //ignore
         }
     }
 

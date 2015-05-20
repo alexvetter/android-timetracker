@@ -1,13 +1,13 @@
-package timetrackr.database;
+package alexvetter.timetrackr.database;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import timetrackr.model.BeaconModel;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import alexvetter.timetrackr.model.BeaconModel;
 
 public class BeaconDatabaseHandler extends AbstractDatabaseHandler<BeaconModel, String> {
 
@@ -232,7 +232,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<BeaconModel, 
 
         object.setUuid(cursor.getString(0));
         object.setName(cursor.getString(1));
-        object.setEnabled(cursor.getInt(2) == 1 ? true : false);
+        object.setEnabled(cursor.getInt(2) == 1);
 
         return object;
     }
