@@ -14,7 +14,7 @@
         android:id="@+id/action_beacon_settings"
         android:icon="@drawable/ic_bluetooth_searching_black_24dp"
         android:orderInCategory="200"
-        android:title="Beacons"
+        android:title="@string/action_beacon_settings"
         app:showAsAction="ifRoom" />
 
     <item

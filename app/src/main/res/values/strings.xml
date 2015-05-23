@@ -8,30 +8,34 @@
 
     <string name="unknown_device">Unknown device</string>
 
-    <!-- Menu items -->
-    <string name="menu_scan">Scan</string>
-    <string name="menu_stop">Stop</string>
-
     <!-- Activities -->
-    <string name="title_activity_scan">Scan for Beacons</string>
-    <string name="title_activity_beacon">Beacons</string>
-    <string name="title_activity_working_hours">Working hours</string>
     <string name="title_activity_period_detail">Period</string>
+    <string name="title_activity_working_hours">Target hours</string>
+    <string name="title_activity_beacon">Beacons</string>
+    <string name="title_activity_scan">Scan for Beacons</string>
 
     <!-- Actions -->
-    <string name="action_working_hours_settings">Working hours</string>
+    <string name="action_beacon_settings">Beacon settings</string>
+    <string name="action_working_hours_settings">Change target hours</string>
+
     <string name="action_scan_settings">Add beacons</string>
     <string name="action_add_period">Add period</string>
+
     <string name="action_save">Save</string>
     <string name="action_stop">Set end time to \'%1$s\'</string>
 
-    <!-- Notification -->
-    <string name="question_stop_current_working">Should period be stopped? (Total: %1$s)</string>
     <string name="action_cancel">Cancel</string>
     <string name="action_ok">OK</string>
+
+    <!-- Notification & Dialogs -->
+    <string name="question_stop_current_working">Should period be stopped? (Total: %1$s)</string>
+
     <string name="dialog_add_beacon_title">Beacon Name</string>
     <string name="dialog_add_beacon_message">Name beacon after location. (E.g. Home Office)</string>
+
     <string name="info_period_end_same_day">Period must end on same day.</string>
+
+    <!-- Image Buttons -->
     <string name="image_desc_delete_button">Delete beacon</string>
     <string name="image_desc_edit_period">Edit period</string>
     <string name="image_desc_delete_period">Delete period</string>
