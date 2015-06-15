@@ -8,7 +8,7 @@ import alexvetter.timetrackr.utils.DateTimeFormats;
 /**
  *
  */
-public class Period implements DomainModel<Integer> {
+public class PeriodModel implements DomainModel<Integer> {
     private Integer id;
     private String name;
     private String remark;
@@ -78,11 +78,11 @@ public class Period implements DomainModel<Integer> {
     }
 
     private DateTime parseDateTime(String dateTimeString) {
-        return DateTimeFormats.dateTimeFormatter.parseDateTime(dateTimeString);
+        return DateTimeFormats.DATE_TIME.parseDateTime(dateTimeString);
     }
 
     private String toString(DateTime dateTime) {
-        return dateTime.toString(DateTimeFormats.dateTimeFormatter);
+        return dateTime.toString(DateTimeFormats.DATE_TIME);
     }
 
     @Override

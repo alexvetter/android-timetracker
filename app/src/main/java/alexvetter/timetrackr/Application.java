@@ -5,16 +5,13 @@ import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.BeaconParser;
-import org.altbeacon.beacon.Identifier;
 import org.altbeacon.beacon.Region;
 import org.altbeacon.beacon.powersave.BackgroundPowerSaver;
 import org.altbeacon.beacon.startup.BootstrapNotifier;
@@ -25,15 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alexvetter.timetrackr.activity.PeriodDetailActivity;
+import alexvetter.timetrackr.controller.BeaconController;
+import alexvetter.timetrackr.controller.PeriodController;
 import alexvetter.timetrackr.database.AbstractDatabaseHandler;
-import alexvetter.timetrackr.database.BeaconDatabaseHandler;
-import alexvetter.timetrackr.database.PeriodDatabaseHandler;
 import alexvetter.timetrackr.database.SQLiteHelper;
-import alexvetter.timetrackr.domain.Beacon;
-import alexvetter.timetrackr.domain.Period;
+import alexvetter.timetrackr.domain.BeaconModel;
+import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 import alexvetter.timetrackr.utils.PeriodCalculator;
-import alexvetter.timetrackr.utils.TargetHours;
 
 public class Application extends android.app.Application implements BootstrapNotifier, AbstractDatabaseHandler.DatabaseHandlerListener {
 
@@ -47,10 +43,10 @@ public class Application extends android.app.Application implements BootstrapNot
     private RegionBootstrap regionBootstrap;
     private BackgroundPowerSaver backgroundPowerSaver;
 
-    private BeaconDatabaseHandler beaconDatabaseHandler;
-    private PeriodDatabaseHandler periodDatabaseHandler;
-
     private final List<Region> regions = new ArrayList<>();
+
+    private BeaconController beaconController;
+    private PeriodController periodController;
 
     @Override
     public void onCreate() {
@@ -58,16 +54,12 @@ public class Application extends android.app.Application implements BootstrapNot
 
         JodaTimeAndroid.init(this);
 
-        this.beaconDatabaseHandler = new BeaconDatabaseHandler();
-        this.periodDatabaseHandler = new PeriodDatabaseHandler();
+        this.beaconController = new BeaconController();
+        this.periodController = new PeriodController(this);
 
         SQLiteHelper.setInstance(this);
 
         enabledBackgroundScan();
-    }
-
-    protected Region newRegionFromBeacon(Beacon model) {
-        return new Region(model.getName() + "-" + model.getId(), Identifier.parse(model.getId().toString()), null, null);
     }
 
     protected void enabledBackgroundScan() {
@@ -103,39 +95,19 @@ public class Application extends android.app.Application implements BootstrapNot
     public void didEnterRegion(Region region) {
         System.out.println("Did enter region. " + region.getId1().toUuidString());
 
-        Beacon model = beaconDatabaseHandler.get(region.getId1().toUuidString());
-        if (model == null || !model.getEnabled()) {
+        BeaconModel beacon = beaconController.getBeacon(region);
+        if (beacon == null || !beacon.getEnabled()) {
             return;
         }
 
-        Period current = periodDatabaseHandler.getCurrentPeriod();
-        if (current == null) {
-            DateTime now = DateTime.now();
-
-            TargetHours targetHours = new TargetHours(this);
-
-            current = new Period();
-
-            current.setName(model.getName());
-            current.setRemark("Automatic entry");
-            current.setStartTime(now);
-            current.setEndTime(now.plus(targetHours.getDuration(now)));
-
-            periodDatabaseHandler.add(current);
-        }
+        periodController.onAutomaticEntry(beacon);
     }
 
     @Override
     public void didExitRegion(Region region) {
-        Period current = periodDatabaseHandler.getCurrentPeriod();
-
-        Beacon model = beaconDatabaseHandler.get(region.getId1().toUuidString());
-        if (model == null || !model.getEnabled()) {
-            return;
-        }
-
-        if (current != null) {
-            sendStopNotification(current, DateTime.now());
+        PeriodModel period = periodController.getCurrentPeriod();
+        if (beaconController.isEnabled(region) && period != null) {
+            sendStopNotification(period, DateTime.now());
         }
     }
 
@@ -144,42 +116,12 @@ public class Application extends android.app.Application implements BootstrapNot
         // ignore
     }
 
-    private void openStopDialog(final Period model, final DateTime stopDateTime) {
-        String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
-        String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
-
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        alert.setTitle(getString(R.string.app_name));
-        alert.setMessage(getString(R.string.question_stop_current_working, period));
-
-        alert.setPositiveButton(getString(R.string.action_stop, endTime), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                Intent stopCurrentPeriod = new Intent(Application.this, StopCurrentPeriodReceiver.class);
-                stopCurrentPeriod.setAction(ACTION_YES);
-
-                stopCurrentPeriod.putExtra(EXTRA_PERIOD, model.getId().intValue());
-                stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(DateTimeFormats.dateTimeFormatter));
-
-                Application.this.sendBroadcast(stopCurrentPeriod);
-            }
-        });
-
-        alert.setNegativeButton(getString(R.string.action_cancel), new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
-            }
-        });
-
-        alert.show();
-    }
-
     /**
      * Builds and send notification to stop working period.
      */
-    private void sendStopNotification(Period model, DateTime stopDateTime) {
+    private void sendStopNotification(PeriodModel model, DateTime stopDateTime) {
         String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
-        String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
+        String endTime = stopDateTime.toString(DateTimeFormats.TIME);
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
@@ -193,7 +135,7 @@ public class Application extends android.app.Application implements BootstrapNot
         stopCurrentPeriod.setAction(ACTION_YES);
 
         stopCurrentPeriod.putExtra(EXTRA_PERIOD, model.getId().intValue());
-        stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(DateTimeFormats.dateTimeFormatter));
+        stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(DateTimeFormats.DATE_TIME));
 
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, stopCurrentPeriod, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -213,7 +155,6 @@ public class Application extends android.app.Application implements BootstrapNot
         notificationManager.notify(model.getId(), builder.build());
     }
 
-
     /**
      * Comes with the DatabaseHandlerListener interface.
      * Will be called if the BeaconDatabaseHandler makes
@@ -222,9 +163,7 @@ public class Application extends android.app.Application implements BootstrapNot
     @Override
     public void notifyDataSetChanged() {
         regions.clear();
-        for (Beacon model : beaconDatabaseHandler.getAll()) {
-            regions.add(newRegionFromBeacon(model));
-        }
+        regions.addAll(beaconController.getBeaconsAsRegions());
     }
 
     public static class StopCurrentPeriodReceiver extends BroadcastReceiver {
@@ -232,16 +171,11 @@ public class Application extends android.app.Application implements BootstrapNot
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (ACTION_YES.equals(action)) {
-                final PeriodDatabaseHandler periodDatabaseHandler = new PeriodDatabaseHandler();
-
                 int periodId = intent.getIntExtra(EXTRA_PERIOD, -1);
-                DateTime endDateTime = DateTimeFormats.dateTimeFormatter.parseDateTime(intent.getStringExtra(EXTRA_STOPDATETIME));
+                DateTime endDateTime = DateTimeFormats.DATE_TIME.parseDateTime(intent.getStringExtra(EXTRA_STOPDATETIME));
 
-                Period model = periodDatabaseHandler.get(periodId);
-                if (model != null) {
-                    model.setEndTime(endDateTime);
-                    periodDatabaseHandler.update(model);
-                }
+                PeriodController controller = new PeriodController(context);
+                controller.onStopPeriod(periodId, endDateTime);
 
                 NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 notificationManager.cancel(periodId);

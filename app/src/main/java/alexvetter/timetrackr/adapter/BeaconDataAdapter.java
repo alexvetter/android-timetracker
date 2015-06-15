@@ -11,14 +11,14 @@ import android.widget.TextView;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.activity.RegisteredBeaconsActivity;
 import alexvetter.timetrackr.database.AbstractDatabaseHandler;
-import alexvetter.timetrackr.domain.Beacon;
+import alexvetter.timetrackr.domain.BeaconModel;
 
 /**
  *
  */
 public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.ViewHolder> implements AbstractDatabaseHandler.DatabaseHandlerListener {
 
-    private AbstractDatabaseHandler<Beacon, String> dataset;
+    private AbstractDatabaseHandler<BeaconModel, String> dataset;
 
     /**
      * Provides references to the views for each data item
@@ -43,7 +43,7 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
      * Data adapter for {@link RegisteredBeaconsActivity}
      * and its RecylerView.
      */
-    public BeaconDataAdapter(AbstractDatabaseHandler<Beacon, String> dataset) {
+    public BeaconDataAdapter(AbstractDatabaseHandler<BeaconModel, String> dataset) {
         this.dataset = dataset;
         this.dataset.registerAdapter(this);
     }
@@ -62,24 +62,26 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Beacon dataModel = dataset.getByRowNum(position);
+        BeaconModel beaconModel = dataset.getByRowNum(position);
 
-        if (dataModel == null) {
+        if (beaconModel == null) {
             System.out.println("Beacon is null");
             return;
         }
 
-        holder.nameTextView.setText(dataModel.getName());
+        String uuid = beaconModel.getId().toString();
 
-        holder.uuidTextView.setText(dataModel.getUuid());
+        holder.nameTextView.setText(beaconModel.getName());
 
-        holder.enabledSwitch.setChecked(dataModel.getEnabled());
+        holder.uuidTextView.setText(uuid);
+
+        holder.enabledSwitch.setChecked(beaconModel.getEnabled());
 
         // Tag the switch button, so we know what to delete
-        holder.enabledSwitch.setTag(dataModel.getUuid());
+        holder.enabledSwitch.setTag(uuid);
 
         // Tag the delete button, so we know what to delete
-        holder.deleteButton.setTag(dataModel.getUuid());
+        holder.deleteButton.setTag(uuid);
     }
 
     /**

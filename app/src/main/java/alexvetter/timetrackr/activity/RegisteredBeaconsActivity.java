@@ -13,8 +13,7 @@ import com.daimajia.swipe.SwipeLayout;
 
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.BeaconDataAdapter;
-import alexvetter.timetrackr.database.BeaconDatabaseHandler;
-import alexvetter.timetrackr.domain.Beacon;
+import alexvetter.timetrackr.controller.BeaconController;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class RegisteredBeaconsActivity extends AppCompatActivity {
@@ -23,6 +22,11 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
      * List view
      */
     private RecyclerView recyclerView;
+
+    /**
+     * Beacon controller
+     */
+    private BeaconController controller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +42,15 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(llm);
+
+        controller = new BeaconController();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        recyclerView.setAdapter(new BeaconDataAdapter(new BeaconDatabaseHandler()));
+        recyclerView.setAdapter(new BeaconDataAdapter(controller.getDatabaseHandler()));
     }
 
     @Override
@@ -70,35 +76,24 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDelete(View view) {
+    private void closeSwipeLayout() {
         SwipeLayout layout = (SwipeLayout) findViewById(R.id.swipelayout_beacon);
         layout.close(true);
+    }
+
+    public void onDelete(View view) {
+        closeSwipeLayout();
 
         String uuid = (String) view.getTag();
 
-        System.out.println("Delete beacon with UUID " + uuid);
-
-        BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
-        handler.deleteById(uuid);
-
-        recyclerView.getAdapter().notifyDataSetChanged();
+        controller.onDelete(uuid);
     }
 
     public void onToggleEnabled(View view) {
-        SwipeLayout layout = (SwipeLayout) findViewById(R.id.swipelayout_beacon);
-        layout.close(true);
+        closeSwipeLayout();
 
         String uuid = (String) view.getTag();
 
-        System.out.println("Toggle enabled of beacon with UUID " + uuid);
-
-        BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
-
-        Beacon model = handler.get(uuid);
-        model.toggleEnabled();
-
-        handler.update(model);
-
-        recyclerView.getAdapter().notifyDataSetChanged();
+        controller.onToggleEnabled(uuid);
     }
 }

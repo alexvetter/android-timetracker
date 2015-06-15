@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import alexvetter.timetrackr.domain.Beacon;
+import alexvetter.timetrackr.domain.BeaconModel;
 
-public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, String> {
+public class BeaconDatabaseHandler extends AbstractDatabaseHandler<BeaconModel, String> {
 
     /**
      * Database Version
@@ -76,7 +76,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
      * @param object model which should be persisted
      */
     @Override
-    public void add(Beacon object) {
+    public void add(BeaconModel object) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Inserting Row
@@ -92,7 +92,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
      * @return object
      */
     @Override
-    public Beacon get(String id) {
+    public BeaconModel get(String id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE, new String[]{
@@ -102,7 +102,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
                 }, KEY_ID + "=?",
                 idWhereClause(id), null, null, null, null);
 
-        Beacon object = null;
+        BeaconModel object = null;
 
         if (cursor.moveToFirst()) {
             object = getObjectFromCursor(cursor);
@@ -114,13 +114,13 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
     }
 
     @Override
-    public Beacon getByRowNum(int rowNum) {
+    public BeaconModel getByRowNum(int rowNum) {
         String selectQuery = "SELECT * FROM " + TABLE + " ORDER BY " + KEY_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Beacon object = null;
+        BeaconModel object = null;
         if (cursor.moveToPosition(rowNum)) {
             object = getObjectFromCursor(cursor);
         }
@@ -136,8 +136,8 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
      * @return list of model objects
      */
     @Override
-    public List<Beacon> getAll() {
-        List<Beacon> result = new ArrayList<>(size());
+    public List<BeaconModel> getAll() {
+        List<BeaconModel> result = new ArrayList<>(size());
 
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE + " ORDER BY " + KEY_NAME;
@@ -164,7 +164,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
      * @return number of entities which where updated (0 or 1)
      */
     @Override
-    public int update(Beacon object) {
+    public int update(BeaconModel object) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = getContentFromObject(object);
@@ -181,15 +181,15 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
      * @param object to be deleted
      */
     @Override
-    public Beacon delete(Beacon object) {
+    public BeaconModel delete(BeaconModel object) {
         return deleteById(object.getId().toString());
     }
 
     @Override
-    public Beacon deleteById(String id) {
+    public BeaconModel deleteById(String id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Beacon result = get(id);
+        BeaconModel result = get(id);
 
         db.delete(TABLE, KEY_ID + " = ?", idWhereClause(id));
 
@@ -218,7 +218,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
         return size;
     }
 
-    private static ContentValues getContentFromObject(Beacon object) {
+    private static ContentValues getContentFromObject(BeaconModel object) {
         ContentValues values = new ContentValues();
 
         values.put(KEY_ID, object.getId().toString());
@@ -228,8 +228,8 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<Beacon, Strin
         return values;
     }
 
-    private static Beacon getObjectFromCursor(Cursor cursor) {
-        Beacon object = new Beacon();
+    private static BeaconModel getObjectFromCursor(Cursor cursor) {
+        BeaconModel object = new BeaconModel();
 
         object.setId(UUID.fromString(cursor.getString(0)));
         object.setName(cursor.getString(1));

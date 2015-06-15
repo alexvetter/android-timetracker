@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
-import alexvetter.timetrackr.domain.Period;
+import alexvetter.timetrackr.domain.PeriodModel;
 
 public class PeriodCalculator {
 
@@ -54,12 +54,12 @@ public class PeriodCalculator {
     public org.joda.time.Period calculateTotalDuration() {
         List<LocalDate> processedDates = new ArrayList<>();
 
-        List<Period> periods = handler.getAll();
+        List<PeriodModel> periods = handler.getAll();
 
         Duration totalWorkingDuration = new Duration(0);
         Duration totalTargetHours = new Duration(0);
 
-        for (Period period : periods) {
+        for (PeriodModel period : periods) {
 
             // add target hours to the startimes day to total target hours
             // we don't count day an which we didn't work

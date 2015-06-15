@@ -5,7 +5,7 @@ import java.util.UUID;
 /**
  *
  */
-public class Beacon implements DomainModel<UUID> {
+public class BeaconModel implements DomainModel<UUID> {
     private UUID uuid;
 
     private String name;

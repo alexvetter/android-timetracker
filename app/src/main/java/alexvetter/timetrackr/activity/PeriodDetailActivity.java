@@ -20,7 +20,7 @@ import org.joda.time.LocalDate;
 
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
-import alexvetter.timetrackr.domain.Period;
+import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 import alexvetter.timetrackr.utils.PeriodCalculator;
 import alexvetter.timetrackr.utils.TargetHours;
@@ -43,7 +43,7 @@ public class PeriodDetailActivity extends AppCompatActivity {
     private TextView targetHoursView;
     private TextView actualHoursView;
 
-    private Period model;
+    private PeriodModel model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +97,7 @@ public class PeriodDetailActivity extends AppCompatActivity {
         remarkEditText.setText(model.getRemark());
     }
 
-    private Period fillModelByView(Period model) {
+    private PeriodModel fillModelByView(PeriodModel model) {
         model.setName(nameEditText.getText().toString());
         model.setRemark(remarkEditText.getText().toString());
 
@@ -126,10 +126,10 @@ public class PeriodDetailActivity extends AppCompatActivity {
     private void updateDateTimeViews() {
         checkTimes();
 
-        dateView.setText(startDateTime.toString(DateTimeFormats.dateFormatter));
+        dateView.setText(startDateTime.toString(DateTimeFormats.DATE));
 
-        startTimeView.setText(startDateTime.toString(DateTimeFormats.timeFormatter));
-        endTimeView.setText(endDateTime.toString(DateTimeFormats.timeFormatter));
+        startTimeView.setText(startDateTime.toString(DateTimeFormats.TIME));
+        endTimeView.setText(endDateTime.toString(DateTimeFormats.TIME));
 
         TargetHours targetHoursSettings = new TargetHours(this);
         org.joda.time.Period targetHours = targetHoursSettings.getDuration(startDateTime.getDayOfWeek()).toPeriod();
@@ -169,7 +169,7 @@ public class PeriodDetailActivity extends AppCompatActivity {
                 PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
 
                 if (model == null) {
-                    model = fillModelByView(new Period());
+                    model = fillModelByView(new PeriodModel());
 
                     handler.add(model);
                 } else {
@@ -191,7 +191,7 @@ public class PeriodDetailActivity extends AppCompatActivity {
         return DatePickerDialog.newInstance(listener, dateTime.getYear(), dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
     }
 
-    private TimePickerDialog newTimePicker(TimePickerDialog.OnTimeSetListener listener,DateTime dateTime) {
+    private TimePickerDialog newTimePicker(TimePickerDialog.OnTimeSetListener listener, DateTime dateTime) {
         return TimePickerDialog.newInstance(listener, dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), true);
     }
 
@@ -201,13 +201,13 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
     private static DateTime generateNewDateTime(DateTime dateTime, int year, int monthOfYear, int dayOfMonth) {
         // DateTimePicker library uses old java Calendar (0 = January and so on)
-        String newDate = leadingZero(year) + "-" + leadingZero(monthOfYear + 1) + "-" + leadingZero(dayOfMonth) + " " + dateTime.toString(DateTimeFormats.timeFormatter);
-        return DateTimeFormats.dateTimeFormatter.parseDateTime(newDate);
+        String newDate = leadingZero(year) + "-" + leadingZero(monthOfYear + 1) + "-" + leadingZero(dayOfMonth) + " " + dateTime.toString(DateTimeFormats.TIME);
+        return DateTimeFormats.DATE_TIME.parseDateTime(newDate);
     }
 
     private static DateTime generateNewDateTime(DateTime dateTime, int hourOfDay, int minute) {
-        String newDate = dateTime.toString(DateTimeFormats.dateFormatter) + " " + leadingZero(hourOfDay) + ":" + leadingZero(minute);
-        return DateTimeFormats.dateTimeFormatter.parseDateTime(newDate);
+        String newDate = dateTime.toString(DateTimeFormats.DATE) + " " + leadingZero(hourOfDay) + ":" + leadingZero(minute);
+        return DateTimeFormats.DATE_TIME.parseDateTime(newDate);
     }
 
     private class StartDateTimeListener implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {

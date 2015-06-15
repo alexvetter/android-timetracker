@@ -9,10 +9,10 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexvetter.timetrackr.domain.Period;
+import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 
-public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integer> {
+public class PeriodDatabaseHandler extends AbstractDatabaseHandler<PeriodModel, Integer> {
 
     /**
      * Table name
@@ -72,7 +72,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
      * @param object model which should be persisted
      */
     @Override
-    public void add(Period object) {
+    public void add(PeriodModel object) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // Inserting Row
@@ -82,13 +82,13 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
     }
 
     @Override
-    public Period getByRowNum(int rowNum) {
+    public PeriodModel getByRowNum(int rowNum) {
         String selectQuery = "SELECT * FROM " + TABLE_PERIOD + " ORDER BY datetime(" + KEY_STARTTIME + ") DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        Period object = null;
+        PeriodModel object = null;
         if (cursor.moveToPosition(rowNum)) {
             object = getObjectFromCursor(cursor);
         }
@@ -105,7 +105,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
      * @return object
      */
     @Override
-    public Period get(Integer id) {
+    public PeriodModel get(Integer id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_PERIOD, new String[]{
@@ -117,7 +117,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
                 }, KEY_ID + "=?",
                 idWhereClause(id), null, null, null, null);
 
-        Period object = null;
+        PeriodModel object = null;
         if (cursor.moveToFirst()) {
             object = getObjectFromCursor(cursor);
         }
@@ -133,8 +133,8 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
      * @return list of model objects
      */
     @Override
-    public List<Period> getAll() {
-        List<Period> result = new ArrayList<>(size());
+    public List<PeriodModel> getAll() {
+        List<PeriodModel> result = new ArrayList<>(size());
 
         // Select All Query
         String selectQuery = "SELECT * FROM " + TABLE_PERIOD + " ORDER BY datetime(" + KEY_STARTTIME + ") DESC";
@@ -161,7 +161,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
      * @return number of entities which where updated (0 or 1)
      */
     @Override
-    public int update(Period object) {
+    public int update(PeriodModel object) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = getContentFromObject(object);
@@ -178,15 +178,15 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
      * @param object to be deleted
      */
     @Override
-    public Period delete(Period object) {
+    public PeriodModel delete(PeriodModel object) {
         return deleteById(object.getId());
     }
 
     @Override
-    public Period deleteById(Integer id) {
+    public PeriodModel deleteById(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Period result = get(id);
+        PeriodModel result = get(id);
 
         db.delete(TABLE_PERIOD, KEY_ID + " = ?", idWhereClause(id));
 
@@ -215,17 +215,17 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
         return size;
     }
 
-    public Period getCurrentPeriod() {
+    public PeriodModel getCurrentPeriod() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String now = DateTime.now().toString(DateTimeFormats.dateTimeFormatter);
+        String now = DateTime.now().toString(DateTimeFormats.DATE_TIME);
 
         String selectQuery = "SELECT * FROM " + TABLE_PERIOD + " WHERE datetime('" + now + "') BETWEEN datetime(" + KEY_STARTTIME + ") AND datetime(" + KEY_ENDTIME + ")";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         System.out.println("Current count: " + cursor.getCount());
 
-        Period model = null;
+        PeriodModel model = null;
         if (cursor.moveToFirst()) {
             model = getObjectFromCursor(cursor);
         }
@@ -235,7 +235,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
         return model;
     }
 
-    private static ContentValues getContentFromObject(Period object) {
+    private static ContentValues getContentFromObject(PeriodModel object) {
         ContentValues values = new ContentValues();
 
         values.put(KEY_NAME, object.getName());
@@ -246,8 +246,8 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<Period, Integ
         return values;
     }
 
-    private static Period getObjectFromCursor(Cursor cursor) {
-        Period object = new Period();
+    private static PeriodModel getObjectFromCursor(Cursor cursor) {
+        PeriodModel object = new PeriodModel();
 
         object.setId(Integer.parseInt(cursor.getString(0)));
         object.setName(cursor.getString(1));

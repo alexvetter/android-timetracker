@@ -17,6 +17,7 @@ import org.joda.time.Period;
 
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.PeriodDataAdapter;
+import alexvetter.timetrackr.controller.PeriodController;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 import alexvetter.timetrackr.utils.PeriodCalculator;
@@ -29,31 +30,34 @@ public class PeriodsActivity extends AppCompatActivity {
      */
     private RecyclerView recyclerView;
 
+    private PeriodController controller;
+
+    private TextView hoursTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_periods);
 
-        TextView hoursTextView = (TextView) findViewById(R.id.period_working_times);
+        hoursTextView = (TextView) findViewById(R.id.period_working_times);
 
         recyclerView = (RecyclerView) findViewById(R.id.period_recycler_view);
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-
-        recyclerView.setAdapter(new PeriodDataAdapter(new PeriodDatabaseHandler()));
-        recyclerView.getAdapter().registerAdapterDataObserver(new AdapterObserver(this, hoursTextView));
 
         // use a linear layout manager
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(llm);
+
+        controller = new PeriodController(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        recyclerView.getAdapter().notifyDataSetChanged();
+        recyclerView.setAdapter(new PeriodDataAdapter(controller.getDatabaseHandler()));
+        recyclerView.getAdapter().registerAdapterDataObserver(new AdapterObserver(this, hoursTextView));
     }
 
     @Override
@@ -81,23 +85,21 @@ public class PeriodsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onDelete(View view) {
+    private void closeSwipeLayout() {
         SwipeLayout layout = (SwipeLayout) findViewById(R.id.swipelayout_period);
         layout.close(true);
+    }
+
+    public void onDelete(View view) {
+        closeSwipeLayout();
 
         Integer id = (Integer) view.getTag();
 
-        System.out.println("Delete period with ID " + id);
-
-        PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-        handler.deleteById(id);
-
-        recyclerView.getAdapter().notifyDataSetChanged();
+        controller.onDelete(id);
     }
 
     public void onEdit(View view) {
-        SwipeLayout layout = (SwipeLayout) findViewById(R.id.swipelayout_period);
-        layout.close(true);
+        closeSwipeLayout();
 
         Integer id = (Integer) view.getTag();
 
