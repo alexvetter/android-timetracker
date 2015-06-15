@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.List;
 
 /**
- * Interface for Database Handlers.
+ * Provides a simple CRUD interface
  * {@link OBJECT} should be the POJO which should be will be persisted.
  */
 interface DatabaseHandler<OBJECT, ID> {

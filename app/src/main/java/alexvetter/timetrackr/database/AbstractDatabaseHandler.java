@@ -10,12 +10,19 @@ public abstract class AbstractDatabaseHandler<OBJECT, ID> implements DatabaseHan
 
     private static final List<DatabaseHandlerListener> adapters = new ArrayList<>();
 
+    /**
+     * Register a new listener
+     * @param adapter
+     */
     public void registerAdapter(DatabaseHandlerListener adapter) {
         synchronized (adapters) {
             adapters.add(adapter);
         }
     }
 
+    /**
+     * Notifies all listeners
+     */
     void fireDataSetChanged() {
         synchronized (adapters) {
             System.out.println("fireDataSetChanged " + adapters.size());
@@ -30,6 +37,9 @@ public abstract class AbstractDatabaseHandler<OBJECT, ID> implements DatabaseHan
         }
     }
 
+    /**
+     * Listener which gets notified on data change
+     */
     public interface DatabaseHandlerListener {
         void notifyDataSetChanged();
     }
