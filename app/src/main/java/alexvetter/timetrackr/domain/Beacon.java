@@ -1,20 +1,22 @@
-package alexvetter.timetrackr.model;
+package alexvetter.timetrackr.domain;
+
+import java.util.UUID;
 
 /**
  *
  */
-public class BeaconModel {
-    private String uuid;
+public class Beacon implements DomainModel<UUID> {
+    private UUID uuid;
 
     private String name;
 
     private Boolean enabled;
 
-    public String getUuid() {
+    public UUID getId() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public void setId(UUID uuid) {
         this.uuid = uuid;
     }
 
@@ -40,7 +42,7 @@ public class BeaconModel {
 
     @Override
     public String toString() {
-        return "BeaconModel{" +
+        return "Beacon{" +
                 "uuid='" + uuid + '\'' +
                 ", name='" + name + '\'' +
                 ", enabled=" + enabled +

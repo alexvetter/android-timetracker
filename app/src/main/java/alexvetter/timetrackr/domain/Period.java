@@ -1,4 +1,4 @@
-package alexvetter.timetrackr.model;
+package alexvetter.timetrackr.domain;
 
 
 import org.joda.time.DateTime;
@@ -8,7 +8,7 @@ import alexvetter.timetrackr.utils.DateTimeFormats;
 /**
  *
  */
-public class PeriodModel implements DateTimeFormats {
+public class Period implements DomainModel<Integer> {
     private Integer id;
     private String name;
     private String remark;
@@ -78,16 +78,16 @@ public class PeriodModel implements DateTimeFormats {
     }
 
     private DateTime parseDateTime(String dateTimeString) {
-        return dateTimeFormatter.parseDateTime(dateTimeString);
+        return DateTimeFormats.dateTimeFormatter.parseDateTime(dateTimeString);
     }
 
     private String toString(DateTime dateTime) {
-        return dateTime.toString(dateTimeFormatter);
+        return dateTime.toString(DateTimeFormats.dateTimeFormatter);
     }
 
     @Override
     public String toString() {
-        return "PeriodModel{" +
+        return "Period{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", remark='" + remark + '\'' +
