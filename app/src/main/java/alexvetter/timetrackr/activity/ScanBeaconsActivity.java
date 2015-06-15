@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.altbeacon.beacon.Beacon;
 import org.altbeacon.beacon.BeaconConsumer;
 import org.altbeacon.beacon.BeaconManager;
 import org.altbeacon.beacon.RangeNotifier;
@@ -22,7 +21,7 @@ import java.util.Collection;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.ScanDataAdapter;
 import alexvetter.timetrackr.database.BeaconDatabaseHandler;
-import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.domain.Beacon;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class ScanBeaconsActivity extends AppCompatActivity implements BeaconConsumer {
@@ -84,8 +83,8 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
     public void onBeaconServiceConnect() {
         beaconManager.setRangeNotifier(new RangeNotifier() {
             @Override
-            public void didRangeBeaconsInRegion(Collection<Beacon> beacons, Region region) {
-                for (Beacon beacon : beacons) {
+            public void didRangeBeaconsInRegion(Collection<org.altbeacon.beacon.Beacon> beacons, Region region) {
+                for (org.altbeacon.beacon.Beacon beacon : beacons) {
                     scanDataAdapter.addDevice(beacon);
                     notifyAdapater();
                 }
@@ -110,7 +109,7 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
 
     public void onDeviceAdd(View view) {
         int itemPosition = (int) view.getTag();
-        final Beacon device = scanDataAdapter.getDevice(itemPosition);
+        final org.altbeacon.beacon.Beacon device = scanDataAdapter.getDevice(itemPosition);
 
         final String address = device.getId1().toUuidString();
 
@@ -134,12 +133,12 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
 
                 BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
 
-                BeaconModel model = handler.get(address);
+                Beacon model = handler.get(address);
 
                 if (model != null) {
                     Toast.makeText(ScanBeaconsActivity.this, R.string.beacon_already_registered, Toast.LENGTH_SHORT).show();
                 } else {
-                    model = new BeaconModel();
+                    model = new Beacon();
 
                     model.setUuid(address);
                     model.setName(value);

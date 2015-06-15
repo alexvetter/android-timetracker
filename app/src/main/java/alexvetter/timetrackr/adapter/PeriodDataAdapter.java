@@ -1,6 +1,5 @@
 package alexvetter.timetrackr.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,21 +7,19 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import org.joda.time.Period;
-
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.activity.PeriodsActivity;
 import alexvetter.timetrackr.database.AbstractDatabaseHandler;
-import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.domain.Period;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 import alexvetter.timetrackr.utils.PeriodCalculator;
 
 /**
  * Adapter for holding tracked periods.
  */
-public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.ViewHolder> implements DateTimeFormats, AbstractDatabaseHandler.DatabaseHandlerListener {
+public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.ViewHolder> implements AbstractDatabaseHandler.DatabaseHandlerListener {
 
-    private AbstractDatabaseHandler<PeriodModel, Integer> dataset;
+    private AbstractDatabaseHandler<Period, Integer> dataset;
 
     /**
      * Provides references to the views for each data item
@@ -58,7 +55,7 @@ public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.Vi
      * Data adapter for {@link PeriodsActivity}
      * and its RecylerView.
      */
-    public PeriodDataAdapter(AbstractDatabaseHandler<PeriodModel, Integer> dataset) {
+    public PeriodDataAdapter(AbstractDatabaseHandler<Period, Integer> dataset) {
         this.dataset = dataset;
         this.dataset.registerAdapter(this);
     }
@@ -79,17 +76,17 @@ public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.Vi
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        PeriodModel dataModel = dataset.getByRowNum(position);
+        Period dataModel = dataset.getByRowNum(position);
 
         holder.nameTextView.setText(dataModel.getName());
 
         holder.remarkTextView.setText(dataModel.getRemark());
 
-        holder.dateTextView.setText(dataModel.getStartTime().toString(niceDateFormatter));
-        holder.startTimeTextView.setText(dataModel.getStartTime().toString(timeFormatter));
-        holder.endTimeTextView.setText(dataModel.getEndTime().toString(timeFormatter));
+        holder.dateTextView.setText(dataModel.getStartTime().toString(DateTimeFormats.niceDateFormatter));
+        holder.startTimeTextView.setText(dataModel.getStartTime().toString(DateTimeFormats.timeFormatter));
+        holder.endTimeTextView.setText(dataModel.getEndTime().toString(DateTimeFormats.timeFormatter));
 
-        Period period = new Period(dataModel.getStartTime(), dataModel.getEndTime());
+        org.joda.time.Period period = new org.joda.time.Period(dataModel.getStartTime(), dataModel.getEndTime());
 
         holder.durationTextView.setText(PeriodCalculator.getPeriodFormatterShort().print(period.normalizedStandard()));
 

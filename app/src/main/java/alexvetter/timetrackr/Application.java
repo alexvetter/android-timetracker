@@ -29,13 +29,13 @@ import alexvetter.timetrackr.database.AbstractDatabaseHandler;
 import alexvetter.timetrackr.database.BeaconDatabaseHandler;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
 import alexvetter.timetrackr.database.SQLiteHelper;
-import alexvetter.timetrackr.model.BeaconModel;
-import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.domain.Beacon;
+import alexvetter.timetrackr.domain.Period;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 import alexvetter.timetrackr.utils.PeriodCalculator;
 import alexvetter.timetrackr.utils.TargetHours;
 
-public class Application extends android.app.Application implements BootstrapNotifier, DateTimeFormats, AbstractDatabaseHandler.DatabaseHandlerListener {
+public class Application extends android.app.Application implements BootstrapNotifier, AbstractDatabaseHandler.DatabaseHandlerListener {
 
     private static final String ACTION_YES = "ACTION_YES";
 
@@ -66,8 +66,8 @@ public class Application extends android.app.Application implements BootstrapNot
         enabledBackgroundScan();
     }
 
-    protected Region newRegionFromBeacon(BeaconModel model) {
-        return new Region(model.getName() + "-" + model.getUuid(), Identifier.parse(model.getUuid()), null, null);
+    protected Region newRegionFromBeacon(Beacon model) {
+        return new Region(model.getName() + "-" + model.getId(), Identifier.parse(model.getId().toString()), null, null);
     }
 
     protected void enabledBackgroundScan() {
@@ -103,18 +103,18 @@ public class Application extends android.app.Application implements BootstrapNot
     public void didEnterRegion(Region region) {
         System.out.println("Did enter region. " + region.getId1().toUuidString());
 
-        BeaconModel model = beaconDatabaseHandler.get(region.getId1().toUuidString());
+        Beacon model = beaconDatabaseHandler.get(region.getId1().toUuidString());
         if (model == null || !model.getEnabled()) {
             return;
         }
 
-        PeriodModel current = periodDatabaseHandler.getCurrentPeriod();
+        Period current = periodDatabaseHandler.getCurrentPeriod();
         if (current == null) {
             DateTime now = DateTime.now();
 
             TargetHours targetHours = new TargetHours(this);
 
-            current = new PeriodModel();
+            current = new Period();
 
             current.setName(model.getName());
             current.setRemark("Automatic entry");
@@ -127,9 +127,9 @@ public class Application extends android.app.Application implements BootstrapNot
 
     @Override
     public void didExitRegion(Region region) {
-        PeriodModel current = periodDatabaseHandler.getCurrentPeriod();
+        Period current = periodDatabaseHandler.getCurrentPeriod();
 
-        BeaconModel model = beaconDatabaseHandler.get(region.getId1().toUuidString());
+        Beacon model = beaconDatabaseHandler.get(region.getId1().toUuidString());
         if (model == null || !model.getEnabled()) {
             return;
         }
@@ -144,7 +144,7 @@ public class Application extends android.app.Application implements BootstrapNot
         // ignore
     }
 
-    private void openStopDialog(final PeriodModel model, final DateTime stopDateTime) {
+    private void openStopDialog(final Period model, final DateTime stopDateTime) {
         String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
         String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
 
@@ -159,7 +159,7 @@ public class Application extends android.app.Application implements BootstrapNot
                 stopCurrentPeriod.setAction(ACTION_YES);
 
                 stopCurrentPeriod.putExtra(EXTRA_PERIOD, model.getId().intValue());
-                stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(dateTimeFormatter));
+                stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(DateTimeFormats.dateTimeFormatter));
 
                 Application.this.sendBroadcast(stopCurrentPeriod);
             }
@@ -177,7 +177,7 @@ public class Application extends android.app.Application implements BootstrapNot
     /**
      * Builds and send notification to stop working period.
      */
-    private void sendStopNotification(PeriodModel model, DateTime stopDateTime) {
+    private void sendStopNotification(Period model, DateTime stopDateTime) {
         String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
         String endTime = stopDateTime.toString(DateTimeFormats.timeFormatter);
 
@@ -193,7 +193,7 @@ public class Application extends android.app.Application implements BootstrapNot
         stopCurrentPeriod.setAction(ACTION_YES);
 
         stopCurrentPeriod.putExtra(EXTRA_PERIOD, model.getId().intValue());
-        stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(dateTimeFormatter));
+        stopCurrentPeriod.putExtra(EXTRA_STOPDATETIME, stopDateTime.toString(DateTimeFormats.dateTimeFormatter));
 
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, stopCurrentPeriod, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -222,7 +222,7 @@ public class Application extends android.app.Application implements BootstrapNot
     @Override
     public void notifyDataSetChanged() {
         regions.clear();
-        for (BeaconModel model : beaconDatabaseHandler.getAll()) {
+        for (Beacon model : beaconDatabaseHandler.getAll()) {
             regions.add(newRegionFromBeacon(model));
         }
     }
@@ -235,9 +235,9 @@ public class Application extends android.app.Application implements BootstrapNot
                 final PeriodDatabaseHandler periodDatabaseHandler = new PeriodDatabaseHandler();
 
                 int periodId = intent.getIntExtra(EXTRA_PERIOD, -1);
-                DateTime endDateTime = dateTimeFormatter.parseDateTime(intent.getStringExtra(EXTRA_STOPDATETIME));
+                DateTime endDateTime = DateTimeFormats.dateTimeFormatter.parseDateTime(intent.getStringExtra(EXTRA_STOPDATETIME));
 
-                PeriodModel model = periodDatabaseHandler.get(periodId);
+                Period model = periodDatabaseHandler.get(periodId);
                 if (model != null) {
                     model.setEndTime(endDateTime);
                     periodDatabaseHandler.update(model);

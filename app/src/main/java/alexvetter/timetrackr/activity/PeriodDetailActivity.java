@@ -17,16 +17,15 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
-import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.domain.Period;
 import alexvetter.timetrackr.utils.DateTimeFormats;
 import alexvetter.timetrackr.utils.PeriodCalculator;
 import alexvetter.timetrackr.utils.TargetHours;
 
-public class PeriodDetailActivity extends AppCompatActivity implements DateTimeFormats {
+public class PeriodDetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_PERIOD_ID = "PERIOD_ID";
 
@@ -44,7 +43,7 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
     private TextView targetHoursView;
     private TextView actualHoursView;
 
-    private PeriodModel model;
+    private Period model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,7 +97,7 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
         remarkEditText.setText(model.getRemark());
     }
 
-    private PeriodModel fillModelByView(PeriodModel model) {
+    private Period fillModelByView(Period model) {
         model.setName(nameEditText.getText().toString());
         model.setRemark(remarkEditText.getText().toString());
 
@@ -127,15 +126,15 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
     private void updateDateTimeViews() {
         checkTimes();
 
-        dateView.setText(startDateTime.toString(dateFormatter));
+        dateView.setText(startDateTime.toString(DateTimeFormats.dateFormatter));
 
-        startTimeView.setText(startDateTime.toString(timeFormatter));
-        endTimeView.setText(endDateTime.toString(timeFormatter));
+        startTimeView.setText(startDateTime.toString(DateTimeFormats.timeFormatter));
+        endTimeView.setText(endDateTime.toString(DateTimeFormats.timeFormatter));
 
         TargetHours targetHoursSettings = new TargetHours(this);
-        Period targetHours = targetHoursSettings.getDuration(startDateTime.getDayOfWeek()).toPeriod();
+        org.joda.time.Period targetHours = targetHoursSettings.getDuration(startDateTime.getDayOfWeek()).toPeriod();
 
-        Period workingHours = new Period(startDateTime, endDateTime);
+        org.joda.time.Period workingHours = new org.joda.time.Period(startDateTime, endDateTime);
 
         targetHoursView.setText(PeriodCalculator.getPeriodFormatter().print(targetHours.normalizedStandard()));
         actualHoursView.setText(PeriodCalculator.getPeriodFormatter().print(workingHours.normalizedStandard()));
@@ -170,7 +169,7 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
                 PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
 
                 if (model == null) {
-                    model = fillModelByView(new PeriodModel());
+                    model = fillModelByView(new Period());
 
                     handler.add(model);
                 } else {
@@ -202,13 +201,13 @@ public class PeriodDetailActivity extends AppCompatActivity implements DateTimeF
 
     private static DateTime generateNewDateTime(DateTime dateTime, int year, int monthOfYear, int dayOfMonth) {
         // DateTimePicker library uses old java Calendar (0 = January and so on)
-        String newDate = leadingZero(year) + "-" + leadingZero(monthOfYear + 1) + "-" + leadingZero(dayOfMonth) + " " + dateTime.toString(timeFormatter);
-        return dateTimeFormatter.parseDateTime(newDate);
+        String newDate = leadingZero(year) + "-" + leadingZero(monthOfYear + 1) + "-" + leadingZero(dayOfMonth) + " " + dateTime.toString(DateTimeFormats.timeFormatter);
+        return DateTimeFormats.dateTimeFormatter.parseDateTime(newDate);
     }
 
     private static DateTime generateNewDateTime(DateTime dateTime, int hourOfDay, int minute) {
-        String newDate = dateTime.toString(dateFormatter) + " " + leadingZero(hourOfDay) + ":" + leadingZero(minute);
-        return dateTimeFormatter.parseDateTime(newDate);
+        String newDate = dateTime.toString(DateTimeFormats.dateFormatter) + " " + leadingZero(hourOfDay) + ":" + leadingZero(minute);
+        return DateTimeFormats.dateTimeFormatter.parseDateTime(newDate);
     }
 
     private class StartDateTimeListener implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {

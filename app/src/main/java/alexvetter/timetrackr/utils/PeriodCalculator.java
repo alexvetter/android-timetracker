@@ -3,7 +3,6 @@ package alexvetter.timetrackr.utils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
-import alexvetter.timetrackr.model.PeriodModel;
+import alexvetter.timetrackr.domain.Period;
 
 public class PeriodCalculator {
 
@@ -52,15 +51,15 @@ public class PeriodCalculator {
         this.targetHoursSettings = targetHoursSettings;
     }
 
-    public Period calculateTotalDuration() {
+    public org.joda.time.Period calculateTotalDuration() {
         List<LocalDate> processedDates = new ArrayList<>();
 
-        List<PeriodModel> periods = handler.getAll();
+        List<Period> periods = handler.getAll();
 
         Duration totalWorkingDuration = new Duration(0);
         Duration totalTargetHours = new Duration(0);
 
-        for (PeriodModel period : periods) {
+        for (Period period : periods) {
 
             // add target hours to the startimes day to total target hours
             // we don't count day an which we didn't work
@@ -78,8 +77,8 @@ public class PeriodCalculator {
             totalWorkingDuration = totalWorkingDuration.plus(workingDuration);
         }
 
-        Period totalWorkingPeriod = totalWorkingDuration.toPeriod();
-        Period totalTargetPeriod = totalTargetHours.toPeriod();
+        org.joda.time.Period totalWorkingPeriod = totalWorkingDuration.toPeriod();
+        org.joda.time.Period totalTargetPeriod = totalTargetHours.toPeriod();
 
         System.out.println("calculated workings time " + getPeriodFormatter().print(totalWorkingPeriod.normalizedStandard()));
         System.out.println("calculated target time " + getPeriodFormatter().print(totalTargetPeriod.normalizedStandard()));

@@ -1,6 +1,5 @@
 package alexvetter.timetrackr.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,14 @@ import android.widget.TextView;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.activity.RegisteredBeaconsActivity;
 import alexvetter.timetrackr.database.AbstractDatabaseHandler;
-import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.domain.Beacon;
 
 /**
  *
  */
 public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.ViewHolder> implements AbstractDatabaseHandler.DatabaseHandlerListener {
 
-    private AbstractDatabaseHandler<BeaconModel, String> dataset;
+    private AbstractDatabaseHandler<Beacon, String> dataset;
 
     /**
      * Provides references to the views for each data item
@@ -44,7 +43,7 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
      * Data adapter for {@link RegisteredBeaconsActivity}
      * and its RecylerView.
      */
-    public BeaconDataAdapter(AbstractDatabaseHandler<BeaconModel, String> dataset) {
+    public BeaconDataAdapter(AbstractDatabaseHandler<Beacon, String> dataset) {
         this.dataset = dataset;
         this.dataset.registerAdapter(this);
     }
@@ -63,10 +62,10 @@ public class BeaconDataAdapter extends RecyclerView.Adapter<BeaconDataAdapter.Vi
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        BeaconModel dataModel = dataset.getByRowNum(position);
+        Beacon dataModel = dataset.getByRowNum(position);
 
         if (dataModel == null) {
-            System.out.println("BeaconModel is null");
+            System.out.println("Beacon is null");
             return;
         }
 

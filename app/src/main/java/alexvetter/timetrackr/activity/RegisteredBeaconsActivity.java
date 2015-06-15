@@ -14,7 +14,7 @@ import com.daimajia.swipe.SwipeLayout;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.BeaconDataAdapter;
 import alexvetter.timetrackr.database.BeaconDatabaseHandler;
-import alexvetter.timetrackr.model.BeaconModel;
+import alexvetter.timetrackr.domain.Beacon;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class RegisteredBeaconsActivity extends AppCompatActivity {
@@ -94,7 +94,7 @@ public class RegisteredBeaconsActivity extends AppCompatActivity {
 
         BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
 
-        BeaconModel model = handler.get(uuid);
+        Beacon model = handler.get(uuid);
         model.toggleEnabled();
 
         handler.update(model);
