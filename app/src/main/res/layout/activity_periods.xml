@@ -15,32 +15,31 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total"
-            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_marginTop="10dp"
+            android:text="@string/hours_total"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/period_working_times"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 hours"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_marginTop="0dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_marginTop="0dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/period_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
         android:scrollbars="vertical" />
 

@@ -40,4 +40,17 @@
     <string name="image_desc_edit_period">Edit period</string>
     <string name="image_desc_delete_period">Delete period</string>
     <string name="image_desc_add_beacon">Add beacon</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="hours_total">Total</string>
+    <string name="edit_period_name">Name</string>
+    <string name="edit_period_remark">Remark</string>
+    <string name="period_date">Date</string>
+    <string name="period_start">Start</string>
+    <string name="period_end">End</string>
 </resources>
