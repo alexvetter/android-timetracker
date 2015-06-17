@@ -2,11 +2,13 @@ package alexvetter.timetrackr.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import alexvetter.timetrackr.R;
+import alexvetter.timetrackr.utils.InputFilterMinMax;
 import alexvetter.timetrackr.utils.TargetHours;
 
 public class TargetHoursActivity extends AppCompatActivity {
@@ -31,6 +33,16 @@ public class TargetHoursActivity extends AppCompatActivity {
         fridayTextView = (TextView) findViewById(R.id.times_friday);
         saturdayTextView = (TextView) findViewById(R.id.times_saturday);
         sundayTextView = (TextView) findViewById(R.id.times_sunday);
+
+        InputFilter[] inputFilter = new InputFilter[]{new InputFilterMinMax(0, 24)};
+
+        mondayTextView.setFilters(inputFilter);
+        tuesdayTextView.setFilters(inputFilter);
+        wednesdayTextView.setFilters(inputFilter);
+        thursdayTextView.setFilters(inputFilter);
+        fridayTextView.setFilters(inputFilter);
+        saturdayTextView.setFilters(inputFilter);
+        sundayTextView.setFilters(inputFilter);
     }
 
     @Override
