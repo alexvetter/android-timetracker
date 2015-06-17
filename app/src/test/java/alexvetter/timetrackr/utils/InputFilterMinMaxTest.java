@@ -10,6 +10,9 @@ import static org.mockito.Mockito.when;
 
 public class InputFilterMinMaxTest {
 
+    private static final String VALID = null;
+    private static final String INVALID = "";
+
     private Spanned createEmptySpanned() {
         return createSpanned("");
     }
@@ -24,12 +27,12 @@ public class InputFilterMinMaxTest {
     public void testFilter() throws Exception {
         InputFilterMinMax filter = new InputFilterMinMax(1, 12);
 
-        assertEquals(null, filter.filter("1", 0, 1, createEmptySpanned(), 0, 0));
-        assertEquals(null, filter.filter("5", 0, 1, createEmptySpanned(), 0, 0));
-        assertEquals(null, filter.filter("12", 0, 1, createEmptySpanned(), 0, 0));
+        assertEquals(VALID, filter.filter("1", 0, 1, createEmptySpanned(), 0, 0));
+        assertEquals(VALID, filter.filter("5", 0, 1, createEmptySpanned(), 0, 0));
+        assertEquals(VALID, filter.filter("12", 0, 1, createEmptySpanned(), 0, 0));
 
-        assertEquals("", filter.filter("0", 0, 1, createEmptySpanned(), 0, 0));
-        assertEquals("", filter.filter("13", 0, 1, createEmptySpanned(), 0, 0));
+        assertEquals(INVALID, filter.filter("0", 0, 1, createEmptySpanned(), 0, 0));
+        assertEquals(INVALID, filter.filter("13", 0, 1, createEmptySpanned(), 0, 0));
     }
 
     @Test
