@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="alexvetter.timetrackr"
-    android:versionCode="1"
+    android:versionCode="2"
     android:versionName="1.0">
+
+    <!-- Android SDK -->
+    <uses-sdk
+        android:minSdkVersion="19"
+        android:targetSdkVersion="22"/>
 
     <!-- BLE-capable devices only -->
     <uses-feature

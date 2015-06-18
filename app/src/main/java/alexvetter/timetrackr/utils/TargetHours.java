@@ -11,14 +11,17 @@ import org.joda.time.Hours;
 public class TargetHours {
     private static final String SHARED_PREFERENCES = "WORKING_HOURS";
 
+    public static final int DEFAULT_HOURS_WORKDAY = 8;
+    public static final int DEFAULT_HOURS_WEEKEND = 0;
+
     public enum Day {
-        MONDAY("HOURS_MONDAY", DateTimeConstants.MONDAY, 8),
-        TUESDAY("HOURS_TUESDAY", DateTimeConstants.TUESDAY, 8),
-        WEDNESDAY("HOURS_WEDNESDAY", DateTimeConstants.WEDNESDAY, 8),
-        THURSDAY("HOURS_THURSDAY", DateTimeConstants.THURSDAY, 8),
-        FRIDAY("HOURS_FRIDAY", DateTimeConstants.FRIDAY, 8),
-        SATURDAY("HOURS_SATURDAY", DateTimeConstants.SATURDAY, 0),
-        SUNDAY("HOURS_SUNDAY", DateTimeConstants.SUNDAY, 0);
+        MONDAY("HOURS_MONDAY", DateTimeConstants.MONDAY, DEFAULT_HOURS_WORKDAY),
+        TUESDAY("HOURS_TUESDAY", DateTimeConstants.TUESDAY, DEFAULT_HOURS_WORKDAY),
+        WEDNESDAY("HOURS_WEDNESDAY", DateTimeConstants.WEDNESDAY, DEFAULT_HOURS_WORKDAY),
+        THURSDAY("HOURS_THURSDAY", DateTimeConstants.THURSDAY, DEFAULT_HOURS_WORKDAY),
+        FRIDAY("HOURS_FRIDAY", DateTimeConstants.FRIDAY, DEFAULT_HOURS_WORKDAY),
+        SATURDAY("HOURS_SATURDAY", DateTimeConstants.SATURDAY, DEFAULT_HOURS_WEEKEND),
+        SUNDAY("HOURS_SUNDAY", DateTimeConstants.SUNDAY, DEFAULT_HOURS_WEEKEND);
 
         private String settingsKey;
         private int dayOfWeek;
