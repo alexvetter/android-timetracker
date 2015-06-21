@@ -4,11 +4,6 @@
     android:versionCode="2"
     android:versionName="1.0">
 
-    <!-- Android SDK -->
-    <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="22"/>
-
     <!-- BLE-capable devices only -->
     <uses-feature
         android:name="android.hardware.bluetooth_le"
