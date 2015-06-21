@@ -1,26 +1,25 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-    // theme appcompat
-    compile 'com.android.support:appcompat-v7:22.1.1'
-
     // support libraries
-    compile 'com.android.support:support-v4:22.1.1'
-    compile 'com.android.support:support-v13:21.0.2'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:support-v13:22.2.0'
 
-    // android widgets
-    compile 'com.android.support:cardview-v7:21.0.2'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
+    // android v7 support libraries
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:cardview-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
 
     // additional widgets
     compile 'com.daimajia.swipelayout:library:1.2.0@aar'
-    compile 'com.github.citux:datetimepicker:0.1.2'
+    compile 'com.github.citux:datetimepicker:0.1.2@aar'
 
     // transient dependencies: joda-time
-    compile 'net.danlew:android.joda:2.7.2'
+    compile 'net.danlew:android.joda:2.8.1@aar'
+    compile 'joda-time:joda-time:2.8.1'
 
     // bluetooth le library
-    compile 'org.altbeacon:android-beacon-library:2.1.4@aar'
+    compile 'org.altbeacon:android-beacon-library:2.3@aar'
 
     // testing
     testCompile 'junit:junit:4.12'
