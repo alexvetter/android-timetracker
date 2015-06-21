@@ -6,4 +6,8 @@
     <color name="primary_light">#FFECD0</color>
     <!-- dark pastel orange -->
     <color name="primary_dark">#FA9200</color>
+    <!-- light gray -->
+    <color name="light_gray">#d3d3d3</color>
+    <!-- red -->
+    <color name="red">#c23b22</color>
 </resources>
