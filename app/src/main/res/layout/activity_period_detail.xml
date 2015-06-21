@@ -85,7 +85,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/border_bottom"
-                android:onClick="onDateTimeClick"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </LinearLayout>
@@ -112,7 +111,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/border_bottom"
-                android:onClick="onDateTimeClick"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
         </LinearLayout>
@@ -139,7 +137,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/border_bottom"
-                android:onClick="onDateTimeClick"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
