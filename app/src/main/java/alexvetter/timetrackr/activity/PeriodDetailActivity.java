@@ -2,6 +2,7 @@ package alexvetter.timetrackr.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,13 +11,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.datetimepicker.date.DatePickerDialog;
-import com.android.datetimepicker.time.RadialPickerLayout;
-import com.android.datetimepicker.time.TimePickerDialog;
+import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+import org.joda.time.Period;
+
+import java.util.Random;
 
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.database.PeriodDatabaseHandler;
@@ -58,7 +61,6 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
         dateView = (TextView) findViewById(R.id.date_picker);
         startTimeView = (TextView) findViewById(R.id.start_time_picker);
-
         endTimeView = (TextView) findViewById(R.id.end_time_picker);
 
         nameEditText = (EditText) findViewById(R.id.edit_period_name);
@@ -66,6 +68,23 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
         targetHoursView = (TextView) findViewById(R.id.period_detail_target_times);
         actualHoursView = (TextView) findViewById(R.id.period_detail_working_times);
+
+        configureDateTimePicker(dateView, new StartDatePicker());
+        configureDateTimePicker(startTimeView, new StartTimePicker());
+        configureDateTimePicker(endTimeView, new EndTimePicker());
+    }
+
+    protected void configureDateTimePicker(View view, final SublimePickerFragment.Callback callback) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SublimePickerFragment pickerFrag = new SublimePickerFragment();
+                pickerFrag.setCallback(callback);
+
+                pickerFrag.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+                pickerFrag.show(getSupportFragmentManager(), "SUBLIME_PICKER_" + new Random().nextInt(1000));
+            }
+        });
     }
 
     @Override
@@ -73,28 +92,29 @@ public class PeriodDetailActivity extends AppCompatActivity {
         super.onResume();
 
         Intent intent = getIntent();
-
         int id = intent.getIntExtra(EXTRA_PERIOD_ID, -1);
 
         if (id >= 0) {
             fillFromId(id);
-        } else {
-            updateDateTimeViews();
         }
-    }
-
-    private void fillFromId(int id) {
-        PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-
-        model = handler.get(id);
-
-        startDateTime = model.getStartTime();
-        endDateTime = model.getEndTime();
 
         updateDateTimeViews();
+    }
+
+    /**
+     * Need to call {@code updateDateTimeViews()} after that.
+     *
+     * @param id of period
+     */
+    private void fillFromId(int id) {
+        PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
+        model = handler.get(id);
 
         nameEditText.setText(model.getName());
         remarkEditText.setText(model.getRemark());
+
+        startDateTime = model.getStartTime();
+        endDateTime = model.getEndTime();
     }
 
     private PeriodModel fillModelByView(PeriodModel model) {
@@ -132,26 +152,12 @@ public class PeriodDetailActivity extends AppCompatActivity {
         endTimeView.setText(endDateTime.toString(DateTimeFormats.TIME));
 
         TargetHours targetHoursSettings = new TargetHours(this);
-        org.joda.time.Period targetHours = targetHoursSettings.getDuration(startDateTime.getDayOfWeek()).toPeriod();
+        Period targetHours = targetHoursSettings.getDuration(startDateTime.getDayOfWeek()).toPeriod();
 
-        org.joda.time.Period workingHours = new org.joda.time.Period(startDateTime, endDateTime);
+        Period workingHours = new Period(startDateTime, endDateTime);
 
         targetHoursView.setText(PeriodCalculator.getPeriodFormatter().print(targetHours.normalizedStandard()));
         actualHoursView.setText(PeriodCalculator.getPeriodFormatter().print(workingHours.normalizedStandard()));
-    }
-
-    public void onDateTimeClick(View view) {
-        switch (view.getId()) {
-            case R.id.date_picker:
-                newDatePicker(new StartDateTimeListener(), startDateTime).show(getFragmentManager(), "datePicker");
-                break;
-            case R.id.start_time_picker:
-                newTimePicker(new StartDateTimeListener(), startDateTime).show(getFragmentManager(), "timePicker");
-                break;
-            case R.id.end_time_picker:
-                newTimePicker(new EndDateTimeListener(), endDateTime).show(getFragmentManager(), "timePicker");
-                break;
-        }
     }
 
     @Override
@@ -167,74 +173,86 @@ public class PeriodDetailActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_save:
                 PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-
                 if (model == null) {
                     model = fillModelByView(new PeriodModel());
-
                     handler.add(model);
                 } else {
                     model = fillModelByView(model);
-
                     handler.update(model);
                 }
-
                 finish();
-
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private DatePickerDialog newDatePicker(DatePickerDialog.OnDateSetListener listener, DateTime dateTime) {
-        // DateTimePicker library uses old java Calendar (0 = January and so on)
-        return DatePickerDialog.newInstance(listener, dateTime.getYear(), dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
+    protected SublimeOptions getDateOptions(DateTime dateTime) {
+        // Sublime options
+        SublimeOptions options = new SublimeOptions();
+
+        options.setDisplayOptions(SublimeOptions.ACTIVATE_DATE_PICKER);
+        options.setPickerToShow(SublimeOptions.Picker.DATE_PICKER);
+
+        options.setDateParams(dateTime.getYear(), dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
+        options.setTimeParams(dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), true);
+
+        return options;
     }
 
-    private TimePickerDialog newTimePicker(TimePickerDialog.OnTimeSetListener listener, DateTime dateTime) {
-        return TimePickerDialog.newInstance(listener, dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), true);
+    protected SublimeOptions getTimeOptions(DateTime dateTime) {
+        // Sublime options
+        SublimeOptions options = new SublimeOptions();
+
+        options.setDisplayOptions(SublimeOptions.ACTIVATE_TIME_PICKER);
+        options.setPickerToShow(SublimeOptions.Picker.TIME_PICKER);
+
+        options.setDateParams(dateTime.getYear(), dateTime.getMonthOfYear() - 1, dateTime.getDayOfMonth());
+        options.setTimeParams(dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), true);
+
+        return options;
     }
 
-    private static String leadingZero(int num) {
-        return String.format("%02d", num);
-    }
+    class StartDatePicker extends SublimePickerFragment.DateCallback {
 
-    private static DateTime generateNewDateTime(DateTime dateTime, int year, int monthOfYear, int dayOfMonth) {
-        // DateTimePicker library uses old java Calendar (0 = January and so on)
-        String newDate = leadingZero(year) + "-" + leadingZero(monthOfYear + 1) + "-" + leadingZero(dayOfMonth) + " " + dateTime.toString(DateTimeFormats.TIME);
-        return DateTimeFormats.DATE_TIME.parseDateTime(newDate);
-    }
-
-    private static DateTime generateNewDateTime(DateTime dateTime, int hourOfDay, int minute) {
-        String newDate = dateTime.toString(DateTimeFormats.DATE) + " " + leadingZero(hourOfDay) + ":" + leadingZero(minute);
-        return DateTimeFormats.DATE_TIME.parseDateTime(newDate);
-    }
-
-    private class StartDateTimeListener implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
         @Override
-        public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-            startDateTime = generateNewDateTime(startDateTime, year, monthOfYear, dayOfMonth);
+        public void onSet(LocalDate date) {
+            startDateTime = startDateTime.withDate(date);
+            endDateTime = endDateTime.withDate(date);
             updateDateTimeViews();
         }
 
         @Override
-        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-            startDateTime = generateNewDateTime(startDateTime, hourOfDay, minute);
-            updateDateTimeViews();
+        SublimeOptions getOptions() {
+            return getDateOptions(startDateTime);
         }
     }
 
-    private class EndDateTimeListener implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    class StartTimePicker extends SublimePickerFragment.TimeCallback {
+
         @Override
-        public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
-            endDateTime = generateNewDateTime(endDateTime, year, monthOfYear, dayOfMonth);
+        public void onSet(LocalTime time) {
+            startDateTime = startDateTime.withTime(time);
             updateDateTimeViews();
         }
 
         @Override
-        public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
-            endDateTime = generateNewDateTime(endDateTime, hourOfDay, minute);
+        SublimeOptions getOptions() {
+            return getTimeOptions(startDateTime);
+        }
+    }
+
+    class EndTimePicker extends SublimePickerFragment.TimeCallback {
+
+        @Override
+        public void onSet(LocalTime time) {
+            endDateTime = endDateTime.withTime(time);
             updateDateTimeViews();
+        }
+
+        @Override
+        SublimeOptions getOptions() {
+            return getTimeOptions(endDateTime);
         }
     }
 }

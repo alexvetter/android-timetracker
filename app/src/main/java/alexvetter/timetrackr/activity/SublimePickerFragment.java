@@ -1,19 +1,3 @@
-/*
- * Copyright 2015 Vikram Kakkar
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package alexvetter.timetrackr.activity;
 
 import android.os.Bundle;
@@ -28,39 +12,23 @@ import com.appeaser.sublimepickerlibrary.helpers.SublimeListenerAdapter;
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-import java.text.DateFormat;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import alexvetter.timetrackr.R;
 
-public class SublimePickerFragment extends DialogFragment {
-    /**
-     * Date & Time formatter used for formatting
-     * text on the switcher button
-     */
-    DateFormat mDateFormatter, mTimeFormatter;
-
-    /**
-     * Picker
-     */
-    SublimePicker mSublimePicker;
+class SublimePickerFragment extends DialogFragment {
 
     /**
      * Callback to activity
      */
-    Callback mCallback;
+    private Callback callback;
 
-    SublimeListenerAdapter mListener = new SublimeListenerAdapter() {
+    private SublimeListenerAdapter listener = new SublimeListenerAdapter() {
         @Override
         public void onCancelled() {
-            if (mCallback != null) {
-                mCallback.onCancelled();
+            if (callback != null) {
+                callback.onCancelled();
             }
 
             // Should actually be called by activity inside `Callback.onCancelled()`
@@ -73,8 +41,8 @@ public class SublimePickerFragment extends DialogFragment {
                                             int hourOfDay, int minuteOfHour,
                                             SublimeRecurrencePicker.RecurrenceOption recurrenceOption,
                                             String recurrenceRule) {
-            if (mCallback != null) {
-                mCallback.onSet(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
+            if (callback != null) {
+                callback.onSet(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
             }
 
             // Should actually be called by activity inside `Callback.onCancelled()`
@@ -83,35 +51,33 @@ public class SublimePickerFragment extends DialogFragment {
     };
 
     /**
-     * Initialize picker and its formatters
+     * Set activity callback, which is also the provider for SublimeOptions
      */
-    public SublimePickerFragment() {
-        mDateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault());
-        mTimeFormatter = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
-
-        mTimeFormatter.setTimeZone(TimeZone.getDefault());
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
 
     /**
-     * Set activity callback
+     * Creates and initializes the SublimePicker
      */
-    public void setCallback(Callback callback) {
-        mCallback = callback;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mSublimePicker = (SublimePicker) getActivity().getLayoutInflater().inflate(R.layout.sublime_picker, container);
+        SublimePicker picker = (SublimePicker) getActivity().getLayoutInflater().inflate(R.layout.sublime_picker, container);
 
-        mSublimePicker.initializePicker(mCallback.getOptions(), mListener);
-        return mSublimePicker;
+        SublimeOptions options = null;
+        if (callback != null) {
+            options = callback.getOptions();
+        }
+
+        picker.initializePicker(options, listener);
+        return picker;
     }
 
     /**
      * Callback interface for interacting with activity
      */
-    public static abstract class Callback {
+    static abstract class Callback {
         void onCancelled() {
             // ignore
         }
@@ -121,16 +87,22 @@ public class SublimePickerFragment extends DialogFragment {
         abstract SublimeOptions getOptions();
     }
 
-    public static abstract class DateCallback extends Callback {
+    /**
+     * Callback interface for interacting with activity
+     */
+    static abstract class DateCallback extends Callback {
         @Override
         void onSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
-            onSet(new LocalDate(year, monthOfYear, dayOfMonth));
+            onSet(new LocalDate(year, monthOfYear + 1, dayOfMonth));
         }
 
         abstract void onSet(LocalDate date);
     }
 
-    public static abstract class TimeCallback extends Callback {
+    /**
+     * Callback interface for interacting with activity
+     */
+    static abstract class TimeCallback extends Callback {
         @Override
         void onSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
             onSet(new LocalTime(hourOfDay, minuteOfHour));
