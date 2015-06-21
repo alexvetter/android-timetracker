@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 dependencies {
+    // datetime picker
+    compile project(':sublimepickerlibrary')
+
     // support libraries
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:support-v13:22.2.0'
@@ -33,7 +36,7 @@ android {
     defaultConfig {
         applicationId "alexvetter.timetrackr"
 
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 22
     }
 }
