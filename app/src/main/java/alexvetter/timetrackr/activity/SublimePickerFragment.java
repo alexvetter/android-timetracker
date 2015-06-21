@@ -29,6 +29,8 @@ import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 import com.appeaser.sublimepickerlibrary.recurrencepicker.SublimeRecurrencePicker;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
 
 import java.text.DateFormat;
 import java.util.Arrays;
@@ -72,11 +74,7 @@ public class SublimePickerFragment extends DialogFragment {
                                             SublimeRecurrencePicker.RecurrenceOption recurrenceOption,
                                             String recurrenceRule) {
             if (mCallback != null) {
-                System.out.println(Arrays.toString(new Integer[] {year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour}));
-
-                DateTime dateTime = new DateTime(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
-
-                mCallback.onSet(dateTime);
+                mCallback.onSet(year, monthOfYear, dayOfMonth, hourOfDay, minuteOfHour);
             }
 
             // Should actually be called by activity inside `Callback.onCancelled()`
@@ -118,8 +116,26 @@ public class SublimePickerFragment extends DialogFragment {
             // ignore
         }
 
-        abstract void onSet(DateTime dateTime);
+        abstract void onSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour);
 
         abstract SublimeOptions getOptions();
+    }
+
+    public static abstract class DateCallback extends Callback {
+        @Override
+        void onSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+            onSet(new LocalDate(year, monthOfYear, dayOfMonth));
+        }
+
+        abstract void onSet(LocalDate date);
+    }
+
+    public static abstract class TimeCallback extends Callback {
+        @Override
+        void onSet(int year, int monthOfYear, int dayOfMonth, int hourOfDay, int minuteOfHour) {
+            onSet(new LocalTime(hourOfDay, minuteOfHour));
+        }
+
+        abstract void onSet(LocalTime time);
     }
 }
