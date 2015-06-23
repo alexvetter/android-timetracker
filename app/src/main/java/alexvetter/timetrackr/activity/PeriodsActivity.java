@@ -1,6 +1,5 @@
 package alexvetter.timetrackr.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +17,8 @@ import org.joda.time.Period;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.PeriodDataAdapter;
 import alexvetter.timetrackr.controller.PeriodController;
-import alexvetter.timetrackr.database.PeriodDatabaseHandler;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
-import alexvetter.timetrackr.utils.PeriodCalculator;
-import alexvetter.timetrackr.utils.TargetHours;
+import alexvetter.timetrackr.utils.PeriodUtils;
 
 public class PeriodsActivity extends AppCompatActivity {
 
@@ -57,7 +54,7 @@ public class PeriodsActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         recyclerView.setAdapter(new PeriodDataAdapter(controller.getDatabaseHandler()));
-        recyclerView.getAdapter().registerAdapterDataObserver(new AdapterObserver(this, hoursTextView));
+        recyclerView.getAdapter().registerAdapterDataObserver(new TotalHoursObserver(controller, hoursTextView));
     }
 
     @Override
@@ -109,24 +106,22 @@ public class PeriodsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private class AdapterObserver extends RecyclerView.AdapterDataObserver {
-        Context context;
-        TextView hoursTextView;
+    /**
+     * Updates the total working hours TextView.
+     */
+    private class TotalHoursObserver extends RecyclerView.AdapterDataObserver {
+        private final PeriodController controller;
+        private final TextView hoursTextView;
 
-        public AdapterObserver(Context context, TextView hoursTextView) {
-            this.context = context;
+        public TotalHoursObserver(PeriodController controller, TextView hoursTextView) {
+            this.controller = controller;
             this.hoursTextView = hoursTextView;
         }
 
         @Override
         public void onChanged() {
-            PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-            TargetHours targetHours = new TargetHours(context);
-
-            PeriodCalculator calculator = new PeriodCalculator(handler, targetHours);
-            Period period = calculator.calculateTotalDuration();
-
-            hoursTextView.setText(PeriodCalculator.getPeriodFormatter().print(period.normalizedStandard()));
+            Period period = controller.calculateTotalDuration();
+            hoursTextView.setText(PeriodUtils.getPeriodFormatter().print(period.normalizedStandard()));
         }
     }
 }

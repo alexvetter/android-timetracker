@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.appeaser.sublimepickerlibrary.helpers.SublimeOptions;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
@@ -22,10 +21,10 @@ import org.joda.time.Period;
 import java.util.Random;
 
 import alexvetter.timetrackr.R;
-import alexvetter.timetrackr.database.PeriodDatabaseHandler;
+import alexvetter.timetrackr.controller.PeriodController;
 import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
-import alexvetter.timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.utils.PeriodUtils;
 import alexvetter.timetrackr.utils.TargetHours;
 
 public class PeriodDetailActivity extends AppCompatActivity {
@@ -48,16 +47,14 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
     private PeriodModel model;
 
+    private PeriodController controller;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_period_detail);
 
-        startDateTime = DateTime.now(DateTimeZone.getDefault());
-
-        TargetHours targetHours = new TargetHours(this);
-
-        endDateTime = DateTime.now(DateTimeZone.getDefault()).plus(targetHours.getDuration(startDateTime.getDayOfWeek()));
+        controller = new PeriodController(this);
 
         dateView = (TextView) findViewById(R.id.date_picker);
         startTimeView = (TextView) findViewById(R.id.start_time_picker);
@@ -68,10 +65,31 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
         targetHoursView = (TextView) findViewById(R.id.period_detail_target_times);
         actualHoursView = (TextView) findViewById(R.id.period_detail_working_times);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         configureDateTimePicker(dateView, new StartDatePicker());
         configureDateTimePicker(startTimeView, new StartTimePicker());
         configureDateTimePicker(endTimeView, new EndTimePicker());
+
+        Intent intent = getIntent();
+        int id = intent.getIntExtra(EXTRA_PERIOD_ID, -1);
+
+        PeriodModel newModel;
+        if (id >= 0) {
+            // default is -1 so an ID would be greater
+            newModel = controller.getPeriod(id);
+        } else {
+            // get a new default model with no ID
+            newModel = controller.getDefaultPeriodModel();
+        }
+
+        setModel(newModel);
+
+        updateDateTimeViews();
     }
 
     protected void configureDateTimePicker(View view, final SublimePickerFragment.Callback callback) {
@@ -87,28 +105,8 @@ public class PeriodDetailActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        int id = intent.getIntExtra(EXTRA_PERIOD_ID, -1);
-
-        if (id >= 0) {
-            fillFromId(id);
-        }
-
-        updateDateTimeViews();
-    }
-
-    /**
-     * Need to call {@code updateDateTimeViews()} after that.
-     *
-     * @param id of period
-     */
-    private void fillFromId(int id) {
-        PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-        model = handler.get(id);
+    private void setModel(PeriodModel newModel) {
+        model = newModel;
 
         nameEditText.setText(model.getName());
         remarkEditText.setText(model.getRemark());
@@ -117,7 +115,10 @@ public class PeriodDetailActivity extends AppCompatActivity {
         endDateTime = model.getEndTime();
     }
 
-    private PeriodModel fillModelByView(PeriodModel model) {
+    /**
+     * Updates model by view.
+     */
+    private PeriodModel updateModel() {
         model.setName(nameEditText.getText().toString());
         model.setRemark(remarkEditText.getText().toString());
 
@@ -156,8 +157,8 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
         Period workingHours = new Period(startDateTime, endDateTime);
 
-        targetHoursView.setText(PeriodCalculator.getPeriodFormatter().print(targetHours.normalizedStandard()));
-        actualHoursView.setText(PeriodCalculator.getPeriodFormatter().print(workingHours.normalizedStandard()));
+        targetHoursView.setText(PeriodUtils.getPeriodFormatter().print(targetHours.normalizedStandard()));
+        actualHoursView.setText(PeriodUtils.getPeriodFormatter().print(workingHours.normalizedStandard()));
     }
 
     @Override
@@ -172,14 +173,7 @@ public class PeriodDetailActivity extends AppCompatActivity {
 
         switch (id) {
             case R.id.action_save:
-                PeriodDatabaseHandler handler = new PeriodDatabaseHandler();
-                if (model == null) {
-                    model = fillModelByView(new PeriodModel());
-                    handler.add(model);
-                } else {
-                    model = fillModelByView(model);
-                    handler.update(model);
-                }
+                controller.addOrUpdate(updateModel());
                 finish();
                 return true;
         }

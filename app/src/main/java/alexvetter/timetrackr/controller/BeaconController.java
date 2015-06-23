@@ -66,8 +66,6 @@ public class BeaconController implements Controller<BeaconDatabaseHandler> {
 
         System.out.println("Add beacon with UUID: " + uuid);
 
-        BeaconDatabaseHandler handler = new BeaconDatabaseHandler();
-
         BeaconModel model = handler.get(uuid);
 
         if (model == null) {

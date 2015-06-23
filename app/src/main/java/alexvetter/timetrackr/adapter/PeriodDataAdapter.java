@@ -12,7 +12,7 @@ import alexvetter.timetrackr.activity.PeriodsActivity;
 import alexvetter.timetrackr.database.AbstractDatabaseHandler;
 import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
-import alexvetter.timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.utils.PeriodUtils;
 
 /**
  * Adapter for holding tracked periods.
@@ -88,7 +88,7 @@ public class PeriodDataAdapter extends RecyclerView.Adapter<PeriodDataAdapter.Vi
 
         org.joda.time.Period period = new org.joda.time.Period(dataModel.getStartTime(), dataModel.getEndTime());
 
-        holder.durationTextView.setText(PeriodCalculator.getPeriodFormatterShort().print(period.normalizedStandard()));
+        holder.durationTextView.setText(PeriodUtils.getPeriodFormatterShort().print(period.normalizedStandard()));
 
         holder.deleteButton.setTag(dataModel.getId());
         holder.editButton.setTag(dataModel.getId());

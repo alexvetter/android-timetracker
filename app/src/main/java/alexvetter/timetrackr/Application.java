@@ -29,7 +29,7 @@ import alexvetter.timetrackr.database.SQLiteHelper;
 import alexvetter.timetrackr.domain.BeaconModel;
 import alexvetter.timetrackr.domain.PeriodModel;
 import alexvetter.timetrackr.utils.DateTimeFormats;
-import alexvetter.timetrackr.utils.PeriodCalculator;
+import alexvetter.timetrackr.utils.PeriodUtils;
 
 public class Application extends android.app.Application implements BootstrapNotifier, AbstractDatabaseHandler.DatabaseHandlerListener {
 
@@ -120,7 +120,7 @@ public class Application extends android.app.Application implements BootstrapNot
      * Builds and send notification to stop working period.
      */
     private void sendStopNotification(PeriodModel model, DateTime stopDateTime) {
-        String period = PeriodCalculator.getPeriodShort(model.getStartTime(), stopDateTime);
+        String period = PeriodUtils.getPeriodShort(model.getStartTime(), stopDateTime);
         String endTime = stopDateTime.toString(DateTimeFormats.TIME);
 
         NotificationCompat.Builder builder =
