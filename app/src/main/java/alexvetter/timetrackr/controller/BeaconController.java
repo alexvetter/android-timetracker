@@ -52,26 +52,23 @@ public class BeaconController implements Controller<BeaconDatabaseHandler> {
     }
 
     public BeaconModel getBeacon(Region region) {
-        return handler.get(region.getId1().toUuidString());
+        return handler.get(region.getId1().toString());
     }
 
     public boolean isDeviceRegistered(org.altbeacon.beacon.Beacon device) {
-        String uuid = device.getId1().toUuidString();
+        String uuid = device.getId1().toString();
 
         return (handler.get(uuid) != null);
     }
 
     public void onDeviceAdd(org.altbeacon.beacon.Beacon device, String name) {
-        String uuid = device.getId1().toUuidString();
+        UUID uuid = device.getId1().toUuid();
 
-        System.out.println("Add beacon with UUID: " + uuid);
-
-        BeaconModel model = handler.get(uuid);
-
+        BeaconModel model = handler.get(uuid.toString());
         if (model == null) {
             model = new BeaconModel();
 
-            model.setId(UUID.fromString(uuid));
+            model.setId(uuid);
             model.setName(name);
             model.setEnabled(true);
 

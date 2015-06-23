@@ -23,7 +23,7 @@ dependencies {
     // bluetooth le library
     compile 'org.altbeacon:android-beacon-library:2.3@aar'
 
-    // testing
+    // unit test
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
 }
