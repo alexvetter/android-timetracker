@@ -96,7 +96,7 @@ public class PeriodController implements Controller<PeriodDatabaseHandler> {
 
     public PeriodModel getDefaultPeriodModel() {
         PeriodModel model = new PeriodModel();
-        model.setStartTime(DateTime.now());
+        model.setStartTime(DateTime.now().withSecondOfMinute(0).withMillisOfSecond(0));
 
         Duration target = targetHours.getDuration(model.getStartTime().getDayOfWeek());
         if (target.isEqual(Hours.hours(0).toStandardDuration())) {

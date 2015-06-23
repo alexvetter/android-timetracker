@@ -52,7 +52,11 @@ public class BeaconController implements Controller<BeaconDatabaseHandler> {
     }
 
     public BeaconModel getBeacon(Region region) {
-        return handler.get(region.getId1().toString());
+        return getBeacon(region.getId1().toUuid());
+    }
+
+    public BeaconModel getBeacon(UUID uuid) {
+        return handler.get(uuid.toString());
     }
 
     public boolean isDeviceRegistered(org.altbeacon.beacon.Beacon device) {
