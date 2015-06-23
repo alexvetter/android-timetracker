@@ -28,7 +28,7 @@ public class PeriodDatabaseHandler extends AbstractDatabaseHandler<PeriodModel, 
     private static final String KEY_STARTTIME = "starttime";
     private static final String KEY_ENDTIME = "endtime";
 
-    static {
+    public static void registerTable() {
         final String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_PERIOD + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"

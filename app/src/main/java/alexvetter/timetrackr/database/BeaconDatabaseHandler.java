@@ -34,7 +34,7 @@ public class BeaconDatabaseHandler extends AbstractDatabaseHandler<BeaconModel, 
     private static final String KEY_NAME = "name";
     private static final String KEY_ENABLED = "enabled";
 
-    static {
+    public static void registerTable() {
         final String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE + "("
                 + KEY_ID + " TEXT PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
