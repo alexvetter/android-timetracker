@@ -36,8 +36,15 @@ public class PeriodUtils {
             .toFormatter();
 
     public static String getPeriodShort(DateTime start, DateTime end) {
-        Duration workingDuration = new Duration(start, end);
-        return getPeriodFormatterShort().print(workingDuration.toPeriod().normalizedStandard());
+        Duration duration = new Duration(start, end);
+
+        return getPeriodFormatterShort().print(duration.toPeriod().normalizedStandard());
+    }
+
+    public static String getPeriodLong(DateTime start, DateTime end) {
+        Duration duration = new Duration(start, end);
+
+        return getPeriodFormatter().print(duration.toPeriod().normalizedStandard());
     }
 
     public static PeriodFormatter getPeriodFormatter() {
