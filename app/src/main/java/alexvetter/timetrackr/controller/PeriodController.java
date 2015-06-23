@@ -35,25 +35,22 @@ public class PeriodController implements Controller<PeriodDatabaseHandler> {
         return handler;
     }
 
+    public boolean existsCurrentPeriod() {
+        return handler.getCurrentPeriod() != null;
+    }
+
     public PeriodModel getCurrentPeriod() {
         return handler.getCurrentPeriod();
     }
 
     public void onAutomaticEntry(BeaconModel beacon) {
-        PeriodModel current = handler.getCurrentPeriod();
-        if (current == null) {
-            DateTime now = DateTime.now();
+        if (!existsCurrentPeriod()) {
+            PeriodModel newPeriod = getDefaultPeriodModel();
 
-            TargetHours targetHours = new TargetHours(context);
+            newPeriod.setName(beacon.getName());
+            newPeriod.setRemark(context.getString(R.string.automatic_entry_remark));
 
-            current = new PeriodModel();
-
-            current.setName(beacon.getName());
-            current.setRemark(context.getString(R.string.automatic_entry_remark));
-            current.setStartTime(now);
-            current.setEndTime(now.plus(targetHours.getDuration(now)));
-
-            handler.add(current);
+            handler.add(newPeriod);
         }
     }
 
@@ -107,6 +104,13 @@ public class PeriodController implements Controller<PeriodDatabaseHandler> {
         }
 
         model.setEndTime(model.getStartTime().plus(target));
+
+        LocalDate startDate = model.getStartTime().toLocalDate();
+        LocalDate endDate = model.getEndTime().toLocalDate();
+
+        if (endDate.isAfter(startDate)) {
+            model.setEndTime(model.getStartTime().withTime(23, 59, 59, 999));
+        }
 
         return model;
     }
