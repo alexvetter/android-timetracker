@@ -9,23 +9,37 @@ for each weekday and it will calcuate when you hit your target hours. This can b
 you can register Bluetooth Beacons and the app with automatically add a new working period if you
 are in range of one of that Beacons.
 
+## Android
+
+* SDK Version `22`
+
+* Build Tools Version `22.0.1`
+
+* Gradle Build Tools Version `1.2.3`
+
+* Min. SDK Version `17`
+
+* Target SDK Version `22`
+
 ## Libraries
 
-* theme appcompat: `com.android.support:appcompat-v7:22.1.1`
+* android support libraries `com.android.support:support-v4:22.2.0` & `com.android.support:support-v13:22.2.0`
 
-* support libraries `com.android.support:support-v4:22.1.1` & `com.android.support:support-v13:21.0.2`
-
-* cardview widget `com.android.support:cardview-v7:21.0.2`
-
-* recyclerview widget `com.android.support:recyclerview-v7:21.0.3`
+* android v7 support libraries `com.android.support:appcompat-v7:22.2.0` & `com.android.support:cardview-v7:22.2.0` & `com.android.support:recyclerview-v7:22.2.0`
 
 * swipelayout `com.daimajia.swipelayout:library:1.2.0@aar`
 
-* datetimepicker `com.github.citux:datetimepicker:0.1.2`
+* sublime datetime picker [GitHub Repo Commit 48298aa](https://github.com/vikramkakkar/SublimePicker/tree/48298aa7694392984a3ab211490d7aa4ad81bb46)
 
-* joda-time for android `net.danlew:android.joda:2.7.2`
+* joda-time for android `net.danlew:android.joda:2.8.1@aar`
+* joda-time `joda-time:joda-time:2.8.1`
 
-* android beacon library `org.altbeacon:android-beacon-library:2.1.4@aar`
+* android beacon library `org.altbeacon:android-beacon-library:2.3@aar`
+
+## Test Libraries
+
+* junit `junit:junit:4.12`
+* mockito `org.mockito:mockito-core:1.10.19`
 
 ## Screenshots
 
