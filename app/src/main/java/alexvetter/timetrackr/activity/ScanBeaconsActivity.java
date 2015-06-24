@@ -21,6 +21,7 @@ import java.util.Collection;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.ScanDataAdapter;
 import alexvetter.timetrackr.controller.BeaconController;
+import alexvetter.timetrackr.utils.BluetoothCheck;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 
 public class ScanBeaconsActivity extends AppCompatActivity implements BeaconConsumer {
@@ -52,6 +53,8 @@ public class ScanBeaconsActivity extends AppCompatActivity implements BeaconCons
         beaconManager = BeaconManager.getInstanceForApplication(this);
 
         controller = new BeaconController();
+
+        BluetoothCheck.checkBluetoothSupport(this);
     }
 
     @Override

@@ -54,5 +54,5 @@
     <string name="period_start">Start</string>
     <string name="period_end">End</string>
     <string name="automatic_entry_remark">Automatic entry</string>
-    <string name="ble_not_supported">Bluetooth LE is not supported by this device!</string>
+    <string name="ble_not_supported">Bluetooth LE is not supported by this device!\nAutomatic time tracking is not possible.</string>
 </resources>

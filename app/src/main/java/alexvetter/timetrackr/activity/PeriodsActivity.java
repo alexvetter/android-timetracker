@@ -1,10 +1,6 @@
 package alexvetter.timetrackr.activity;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.daimajia.swipe.SwipeLayout;
 
@@ -22,6 +17,7 @@ import org.joda.time.Period;
 import alexvetter.timetrackr.R;
 import alexvetter.timetrackr.adapter.PeriodDataAdapter;
 import alexvetter.timetrackr.controller.PeriodController;
+import alexvetter.timetrackr.utils.BluetoothCheck;
 import alexvetter.timetrackr.utils.DividerItemDecoration;
 import alexvetter.timetrackr.utils.PeriodUtils;
 
@@ -54,28 +50,7 @@ public class PeriodsActivity extends AppCompatActivity {
 
         controller = new PeriodController(this);
 
-        checkBluetoothSupport();
-    }
-
-    private void checkBluetoothSupport() {
-        // Use this check to determine whether BLE is
-        // supported on the device. Then you can selectively
-        // disable BLE-related features.
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
-        }
-
-        // Ensures Bluetooth is available on
-        // the device and it is enabled. If not,
-        // displays a dialog requesting user
-        // permission to enable Bluetooth.
-        final int REQUEST_ENABLE_BT = 2;
-        final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
+        BluetoothCheck.checkBluetoothSupport(this);
     }
 
     @Override
