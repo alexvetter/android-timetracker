@@ -17,7 +17,7 @@ import org.joda.time.LocalTime;
 
 import alexvetter.timetrackr.R;
 
-class SublimePickerFragment extends DialogFragment {
+public class SublimePickerFragment extends DialogFragment {
 
     /**
      * Callback to activity
@@ -49,6 +49,10 @@ class SublimePickerFragment extends DialogFragment {
             dismiss();
         }
     };
+
+    public SublimePickerFragment() {
+        super();
+    }
 
     /**
      * Set activity callback, which is also the provider for SublimeOptions
